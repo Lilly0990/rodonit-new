@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import CookieConsent from '@/components/CookieConsent'
+import '../globals.css'
 
 const inter = Inter({ subsets: ['latin', 'cyrillic'], variable: '--font-inter' })
 
@@ -20,9 +21,11 @@ export const metadata: Metadata = {
 
 export default function FrontendLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className={`${inter.variable} font-sans`}>
-      {children}
-      <CookieConsent />
-    </div>
+    <html lang="uk" className={inter.variable}>
+      <body className="min-h-screen flex flex-col font-sans">
+        {children}
+        <CookieConsent />
+      </body>
+    </html>
   )
 }

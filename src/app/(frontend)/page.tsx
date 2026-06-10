@@ -4,6 +4,7 @@ import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import CategoryIcon from '@/components/CategoryIcon'
 import { categories, products, getProductsByCategory } from '@/data/products'
+import { latestArticles } from '@/data/articles'
 import { productsCount } from '@/lib/plural'
 
 export const metadata: Metadata = {
@@ -12,17 +13,17 @@ export const metadata: Metadata = {
     'Препарати для агробізнесу України: стимулятори росту, мікродобрива, фунгіциди, ад’юванти. Зеребра АГРО, MIRA LIFE, Верно, Гідролип та інші.',
 }
 
-// Три «Є» — філософія компанії (категорія 3E з оригінального сайту)
+// «Три-Е» — запатентована технологія компанії (з оригінального сайту)
 const threeE = [
-  { letter: 'Е', title: 'Ефективність', text: 'Препарати з підтвердженою польовою ефективністю — приріст урожайності та якості продукції.' },
-  { letter: 'Е', title: 'Економія', text: 'Зниження норм ЗЗР і добрив, менше обробок — реальна економія коштів господарства.' },
-  { letter: 'Е', title: 'Екологічність', text: 'Рішення, придатні для органічного виробництва (сертифікати ECOCERT, OMRI, Органік Стандарт).' },
+  { letter: 'Е', title: 'Екологічно', text: 'Вирощування екологічно чистої продукції, відновлення родючості ґрунту, захист урожаю від хімічних і токсичних стресів.' },
+  { letter: 'Е', title: 'Економічно', text: 'Оптимальні витрати — максимальний урожай. Зниження кількості пестицидів і хімічного навантаження на ґрунт.' },
+  { letter: 'Е', title: 'Ефективно', text: 'Підтверджена ефективність препаратів: вищі прибутки, врожайність, якість продукції та родючість ґрунтів.' },
 ]
 
-const news = [
-  { date: '2026', title: 'Лінійка VERNO: корекція дефіциту елементів живлення', excerpt: 'Мікродобрива VERNO CaB та Cu30+Zn30 — швидкий старт і пролонгований ефект для всіх культур.', href: '/preparaty?cat=mikrodobryva' },
-  { date: '2026', title: 'НОРДОКС 75 WG — найконцентрованіша мідь на ринку', excerpt: '75% чистої біологічно активної міді, сертифікат OMRI для органічного виробництва.', href: '/preparaty/nordoks' },
-  { date: '2026', title: 'Зеребра АГРО — стимулятор на основі колоїдного срібла', excerpt: 'Єдиний у світі препарат на основі колоїдного срібла з фунгіцидним і бактерицидним ефектом.', href: '/preparaty/zerebra-agro' },
+const stats = [
+  { value: '20+', label: 'років на ринку' },
+  { value: '20+', label: 'власних препаратів' },
+  { value: '100+', label: 'дослідів щороку' },
 ]
 
 export default function HomePage() {
@@ -33,19 +34,22 @@ export default function HomePage() {
         {/* Hero */}
         <section className="bg-[var(--green-deep)] text-white py-20 px-4">
           <div className="max-w-6xl mx-auto">
+            <p className="text-green-300 font-medium mb-3 uppercase tracking-wide text-sm">
+              Оптимальні витрати — максимальний урожай
+            </p>
             <h1 className="text-4xl md:text-5xl font-bold mb-4 leading-tight">
-              Препарати для<br />сучасного агробізнесу
+              Технології<br />підвищення врожайності
             </h1>
             <p className="text-lg text-green-100/80 mb-8 max-w-xl">
-              Стимулятори росту, мікродобрива та засоби захисту рослин для підвищення
-              врожайності. Перевірено на полях України.
+              Стимулятори росту, мікродобрива та засоби захисту рослин для аграріїв України.
+              Економічно, екологічно, ефективно.
             </p>
             <div className="flex flex-wrap gap-4">
               <Link
                 href="/preparaty"
                 className="bg-white text-green-900 font-semibold px-6 py-3 rounded hover:bg-green-50 transition-colors"
               >
-                Всі препарати
+                Каталог препаратів
               </Link>
               <Link
                 href="/contacts"
@@ -88,95 +92,88 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* Про компанію + три «Є» (3E) */}
+        {/* Про компанію — вітальний текст + статистика + кнопка */}
         <section className="py-16 px-4 bg-white">
-          <div className="max-w-6xl mx-auto">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-              <div>
-                <span className="text-sm font-medium text-green-700">Про компанію</span>
-                <h2 className="text-3xl font-bold text-gray-900 mt-2 mb-4">
-                  Технології підвищення врожайності
-                </h2>
-                <p className="text-gray-600 mb-4">
-                  ТОВ «Родоніт Агро» розробляє і постачає препарати для захисту та стимуляції рослин —
-                  від біостимуляторів і мікродобрив до фунгіцидів та ад’ювантів. Наші рішення допомагають
-                  господарствам підвищувати врожайність, знижувати витрати на ЗЗР і вирощувати якісну продукцію.
-                </p>
-                <p className="text-gray-600 mb-6">
-                  Ми працюємо з усіма основними культурами України та надаємо технічний супровід агронома
-                  на кожному етапі — від підбору схеми до контролю результату в полі.
-                </p>
-                <Link
-                  href="/about"
-                  className="text-green-700 font-medium hover:underline"
-                >
-                  Детальніше про компанію →
-                </Link>
-              </div>
-
-              {/* Три «Є» */}
-              <div className="space-y-4">
-                {threeE.map((e) => (
-                  <div key={e.title} className="flex gap-4 bg-[var(--green-soft)] rounded-lg p-5">
-                    <div className="w-12 h-12 rounded-full bg-green-700 text-white flex items-center justify-center text-xl font-bold shrink-0">
-                      {e.letter}
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-gray-900">{e.title}</h3>
-                      <p className="text-sm text-gray-600 mt-1">{e.text}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
+          <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <span className="text-sm font-medium text-green-700">Про компанію</span>
+              <h2 className="text-3xl font-bold text-gray-900 mt-2 mb-4">
+                Вітаємо на сайті «Родоніт Агро»!
+              </h2>
+              <p className="text-gray-600 mb-4">
+                Головна мета нашої компанії — забезпечити виробників сільськогосподарської продукції
+                економічними та ефективними технологіями, інноваційними й унікальними препаратами,
+                здатними вирішити проблеми рослинництва з мінімальними витратами.
+              </p>
+              <p className="text-gray-600 mb-6">
+                За понад 20 років діяльності ми сформували місткий портфель високоякісних препаратів —
+                понад 20 найменувань, де «Родоніт Агро» є реєстрантом.
+              </p>
+              <Link
+                href="/about"
+                className="inline-block bg-green-700 text-white font-medium px-6 py-3 rounded hover:bg-green-800 transition-colors"
+              >
+                Дізнатись більше про компанію →
+              </Link>
             </div>
-          </div>
-        </section>
-
-        {/* Чому ми */}
-        <section className="py-16 px-4">
-          <div className="max-w-6xl mx-auto">
-            <h2 className="text-2xl font-bold text-gray-900 mb-10">Чому обирають Rodonit</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {[
-                { title: 'Ефективність', text: 'Підтверджена результатами польових досліджень на всіх основних культурах України' },
-                { title: 'Технологічні схеми', text: 'Детальні схеми застосування для кожної культури і фази розвитку рослин' },
-                { title: 'B2B партнерство', text: 'Гнучкі умови для дилерів і великих господарств. Технічна підтримка агронома' },
-              ].map((item) => (
-                <div key={item.title} className="border-l-4 border-green-600 pl-6">
-                  <h3 className="font-semibold text-gray-900 mb-2">{item.title}</h3>
-                  <p className="text-gray-600 text-sm">{item.text}</p>
+            <div className="grid grid-cols-3 gap-4">
+              {stats.map((s) => (
+                <div key={s.label} className="bg-[var(--green-soft)] rounded-lg p-6 text-center">
+                  <div className="text-3xl font-bold text-green-800">{s.value}</div>
+                  <div className="text-sm text-gray-600 mt-1">{s.label}</div>
                 </div>
               ))}
             </div>
           </div>
         </section>
 
-        {/* Новини / Блог */}
+        {/* Технологія «Три-Е» */}
+        <section className="py-16 px-4">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-10">
+              <h2 className="text-2xl font-bold text-gray-900">Технологія «Три-Е»</h2>
+              <p className="text-gray-500 mt-2">Запатентована філософія роботи компанії</p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {threeE.map((e) => (
+                <div key={e.title} className="bg-white border border-gray-200 rounded-lg p-6">
+                  <div className="w-12 h-12 rounded-full bg-green-700 text-white flex items-center justify-center text-xl font-bold mb-4">
+                    {e.letter}
+                  </div>
+                  <h3 className="font-semibold text-gray-900 mb-2">{e.title}</h3>
+                  <p className="text-sm text-gray-600">{e.text}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Новини / Статті — реальні */}
         <section className="py-16 px-4 bg-white">
           <div className="max-w-6xl mx-auto">
             <div className="flex items-end justify-between mb-8">
               <div>
                 <h2 className="text-2xl font-bold text-gray-900">Новини та статті</h2>
-                <p className="text-gray-500 mt-1">Корисне про препарати, агрономію та результати</p>
+                <p className="text-gray-500 mt-1">Події компанії та корисне про агрономію</p>
               </div>
               <Link href="/blog" className="text-green-700 text-sm font-medium hover:underline whitespace-nowrap">
                 Усі статті →
               </Link>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {news.map((n) => (
+              {latestArticles.map((a) => (
                 <Link
-                  key={n.title}
-                  href={n.href}
+                  key={a.slug}
+                  href={`/blog/${a.slug}`}
                   className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-md hover:border-green-400 transition-all group flex flex-col"
                 >
                   <div className="h-40 bg-[var(--green-soft)] flex items-center justify-center">
                     <span className="text-green-700/40 text-5xl font-bold">R</span>
                   </div>
                   <div className="p-5 flex flex-col flex-1">
-                    <span className="text-xs text-gray-400 mb-2">{n.date}</span>
-                    <h3 className="font-semibold text-gray-900 group-hover:text-green-700 mb-2">{n.title}</h3>
-                    <p className="text-sm text-gray-500 flex-1">{n.excerpt}</p>
+                    <span className="text-xs font-medium text-green-700 bg-green-50 px-2 py-0.5 rounded w-fit mb-2">{a.category}</span>
+                    <h3 className="font-semibold text-gray-900 group-hover:text-green-700 mb-2 line-clamp-2">{a.title}</h3>
+                    <p className="text-sm text-gray-500 flex-1 line-clamp-3">{a.excerpt}</p>
                     <span className="mt-4 text-green-700 text-sm font-medium group-hover:underline">Читати →</span>
                   </div>
                 </Link>

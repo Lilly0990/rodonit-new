@@ -4,8 +4,10 @@ import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import CategoryIcon from '@/components/CategoryIcon'
 import { categories, products, getProductsByCategory } from '@/data/products'
-import { latestArticles } from '@/data/articles'
+import { getAllArticles } from '@/lib/cms'
 import { productsCount } from '@/lib/plural'
+
+export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
   title: 'Rodonit Agro — Препарати для захисту та стимуляції рослин',
@@ -26,7 +28,8 @@ const stats = [
   { value: '100+', label: 'дослідів щороку' },
 ]
 
-export default function HomePage() {
+export default async function HomePage() {
+  const latestArticles = (await getAllArticles()).slice(0, 3)
   return (
     <>
       <Header />

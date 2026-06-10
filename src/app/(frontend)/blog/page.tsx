@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
-import { articles } from '@/data/articles'
+import { getAllArticles } from '@/lib/cms'
 
 export const metadata: Metadata = {
   title: 'Новини та статті',
@@ -10,7 +10,11 @@ export const metadata: Metadata = {
     'Новини компанії Rodonit Agro, статті про препарати, агрономію та результати застосування на культурах.',
 }
 
-export default function BlogPage() {
+export const dynamic = 'force-dynamic'
+
+export default async function BlogPage() {
+  const articles = await getAllArticles()
+
   return (
     <>
       <Header />
@@ -23,25 +27,33 @@ export default function BlogPage() {
         </div>
 
         <div className="max-w-6xl mx-auto px-4 py-12">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {articles.map((a) => (
-              <Link
-                key={a.slug}
-                href={`/blog/${a.slug}`}
-                className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-md hover:border-green-400 transition-all group flex flex-col"
-              >
-                <div className="h-40 bg-[var(--green-soft)] flex items-center justify-center">
-                  <span className="text-green-700/40 text-5xl font-bold">R</span>
-                </div>
-                <div className="p-5 flex flex-col flex-1">
-                  <span className="text-xs font-medium text-green-700 bg-green-50 px-2 py-0.5 rounded w-fit mb-2">{a.category}</span>
-                  <h2 className="font-semibold text-gray-900 group-hover:text-green-700 mb-2 line-clamp-3">{a.title}</h2>
-                  <p className="text-sm text-gray-500 flex-1 line-clamp-3">{a.excerpt}</p>
-                  <span className="mt-4 text-green-700 text-sm font-medium group-hover:underline">Читати →</span>
-                </div>
-              </Link>
-            ))}
-          </div>
+          {articles.length === 0 ? (
+            <p className="text-gray-500">Поки немає опублікованих статей.</p>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {articles.map((a) => (
+                <Link
+                  key={a.slug}
+                  href={`/blog/${a.slug}`}
+                  className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-md hover:border-green-400 transition-all group flex flex-col"
+                >
+                  <div className="h-40 bg-[var(--green-soft)] flex items-center justify-center">
+                    <span className="text-green-700/40 text-5xl font-bold">R</span>
+                  </div>
+                  <div className="p-5 flex flex-col flex-1">
+                    <span className="text-xs font-medium text-green-700 bg-green-50 px-2 py-0.5 rounded w-fit mb-2">
+                      {a.category}
+                    </span>
+                    <h2 className="font-semibold text-gray-900 group-hover:text-green-700 mb-2 line-clamp-3">
+                      {a.title}
+                    </h2>
+                    <p className="text-sm text-gray-500 flex-1 line-clamp-3">{a.excerpt}</p>
+                    <span className="mt-4 text-green-700 text-sm font-medium group-hover:underline">Читати →</span>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          )}
         </div>
       </main>
       <Footer />

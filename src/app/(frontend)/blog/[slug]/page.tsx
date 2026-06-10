@@ -3,13 +3,11 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
-import { articles, getArticle } from '@/data/articles'
+import { getArticleBySlug } from '@/lib/cms'
 
 const SITE = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'
 
-export function generateStaticParams() {
-  return articles.map((a) => ({ slug: a.slug }))
-}
+export const dynamic = 'force-dynamic'
 
 export async function generateMetadata({
   params,
@@ -17,44 +15,16 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>
 }): Promise<Metadata> {
   const { slug } = await params
-  const article = getArticle(slug)
+  const article = await getArticleBySlug(slug)
   if (!article) return { title: 'Статтю не знайдено' }
   const url = `${SITE}/blog/${article.slug}`
   return {
     title: article.title,
     description: article.excerpt,
     alternates: { canonical: url },
-    openGraph: {
-      type: 'article',
-      title: article.title,
-      description: article.excerpt,
-      url,
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title: article.title,
-      description: article.excerpt,
-    },
+    openGraph: { type: 'article', title: article.title, description: article.excerpt, url },
+    twitter: { card: 'summary_large_image', title: article.title, description: article.excerpt },
   }
-}
-
-// Евристика: короткий рядок без кінцевої пунктуації, з великої літери,
-// за яким іде розгорнутий абзац → підзаголовок (H2)
-type Block = { type: 'heading' | 'paragraph'; text: string }
-
-function toBlocks(paragraphs: string[]): Block[] {
-  const blocks: Block[] = []
-  for (let i = 0; i < paragraphs.length; i++) {
-    const p = paragraphs[i].trim()
-    const next = paragraphs[i + 1]?.trim() ?? ''
-    const looksLikeHeading =
-      p.length < 85 &&
-      !/[.!?,;:]$/.test(p) &&
-      !/^[a-zа-яіїєґ]/.test(p) &&
-      next.length > 120
-    blocks.push({ type: looksLikeHeading ? 'heading' : 'paragraph', text: p })
-  }
-  return blocks
 }
 
 export default async function ArticlePage({
@@ -63,11 +33,10 @@ export default async function ArticlePage({
   params: Promise<{ slug: string }>
 }) {
   const { slug } = await params
-  const article = getArticle(slug)
+  const article = await getArticleBySlug(slug)
   if (!article) notFound()
 
   const url = `${SITE}/blog/${article.slug}`
-  const blocks = toBlocks(article.paragraphs)
 
   const articleSchema = {
     '@context': 'https://schema.org',
@@ -76,6 +45,7 @@ export default async function ArticlePage({
     description: article.excerpt,
     articleSection: article.category,
     inLanguage: 'uk-UA',
+    ...(article.publishedDate ? { datePublished: article.publishedDate } : {}),
     mainEntityOfPage: { '@type': 'WebPage', '@id': url },
     author: { '@type': 'Organization', name: 'Родоніт Агро' },
     publisher: {
@@ -99,16 +69,9 @@ export default async function ArticlePage({
     <>
       <Header />
       <main className="flex-1">
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
-        />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
-        />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
 
-        {/* Хлібні крихти */}
         <nav aria-label="Хлібні крихти" className="border-b border-gray-200 bg-white/60">
           <div className="max-w-3xl mx-auto px-4 py-3 text-sm text-gray-500 flex gap-2 flex-wrap">
             <Link href="/" className="hover:text-green-700">Головна</Link>
@@ -124,15 +87,13 @@ export default async function ArticlePage({
             <span className="text-xs font-medium text-green-700 bg-green-50 px-2.5 py-1 rounded">
               {article.category}
             </span>
-            <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mt-4 leading-tight">
-              {article.title}
-            </h1>
+            <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mt-4 leading-tight">{article.title}</h1>
             <p className="text-lg text-gray-600 mt-4">{article.excerpt}</p>
           </header>
 
           <div className="space-y-4 text-gray-700 leading-relaxed">
-            {blocks.map((b, i) =>
-              b.type === 'heading' ? (
+            {article.paragraphs.map((b, i) =>
+              b.isHeading ? (
                 <h2 key={i} className="text-xl font-bold text-gray-900 mt-8 mb-2">
                   {b.text}
                 </h2>

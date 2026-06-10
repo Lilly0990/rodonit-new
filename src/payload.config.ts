@@ -234,6 +234,84 @@ export default buildConfig({
         },
       ],
     },
+
+    {
+      slug: 'articles',
+      admin: {
+        useAsTitle: 'title',
+        defaultColumns: ['title', 'category', 'publishedDate', '_status'],
+        description: 'Новини компанії та статті для блогу',
+      },
+      labels: { singular: 'Новина / стаття', plural: 'Новини та статті' },
+      access: { read: () => true }, // публічний контент блогу
+      versions: { drafts: true },
+      fields: [
+        {
+          name: 'title',
+          type: 'text',
+          label: 'Заголовок',
+          required: true,
+        },
+        {
+          name: 'slug',
+          type: 'text',
+          label: 'Slug (URL)',
+          required: true,
+          unique: true,
+          admin: { description: 'Латиницею, напр.: ahronomichnyi-treninh' },
+        },
+        {
+          name: 'category',
+          type: 'select',
+          label: 'Рубрика',
+          required: true,
+          defaultValue: 'Новини',
+          options: [
+            { label: 'Новини', value: 'Новини' },
+            { label: 'Стаття', value: 'Стаття' },
+          ],
+        },
+        {
+          name: 'publishedDate',
+          type: 'date',
+          label: 'Дата публікації',
+          admin: { date: { pickerAppearance: 'dayOnly' } },
+        },
+        {
+          name: 'excerpt',
+          type: 'textarea',
+          label: 'Короткий опис (анонс)',
+          required: true,
+        },
+        {
+          name: 'coverImage',
+          type: 'upload',
+          relationTo: 'media',
+          label: 'Обкладинка',
+        },
+        {
+          name: 'paragraphs',
+          type: 'array',
+          label: 'Контент статті',
+          labels: { singular: 'Блок', plural: 'Блоки' },
+          admin: { description: 'Кожен блок — абзац або підзаголовок' },
+          fields: [
+            {
+              name: 'isHeading',
+              type: 'checkbox',
+              label: 'Це підзаголовок (H2)',
+              defaultValue: false,
+            },
+            {
+              name: 'text',
+              type: 'textarea',
+              label: 'Текст',
+              required: true,
+            },
+          ],
+        },
+      ],
+    },
   ],
 
   globals: [
@@ -272,6 +350,8 @@ export default buildConfig({
     client: {
       url: process.env.DATABASE_URL || 'file:./rodonit.db',
     },
+    // синхронізувати схему з БД автоматично (MVP; для прод-міграцій замінити на payload migrate)
+    push: true,
   }),
 
   sharp,

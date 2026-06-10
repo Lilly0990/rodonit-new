@@ -1,21 +1,20 @@
 import type { Metadata } from 'next'
+import Image from 'next/image'
 import Link from 'next/link'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
+import { categories, products, getProductsByCategory } from '@/data/products'
 
 export const metadata: Metadata = {
   title: 'Rodonit Agro — Препарати для захисту та стимуляції рослин',
-  description: 'Biostimulants та регулятори росту для агробізнесу України. MIRA LIFE, Зеребра АГРО, Верно, Гідролип та інші препарати.',
+  description:
+    'Препарати для агробізнесу України: стимулятори росту, мікродобрива, фунгіциди, ад’юванти. Зеребра АГРО, MIRA LIFE, Верно, Гідролип та інші.',
 }
 
-const products = [
-  { name: 'Зеребра АГРО', slug: 'zerebra-agro', desc: 'Стимулятор росту та імунітету рослин' },
-  { name: 'MIRA LIFE S1', slug: 'mira-life-s1', desc: 'Комплексний препарат для зернових' },
-  { name: 'MIRA LIFE S2', slug: 'mira-life-s2', desc: 'Для просапних та овочевих культур' },
-  { name: 'Верно СаВ', slug: 'verno-sav', desc: 'Корекція кальцію й бору' },
-  { name: 'Гідролип', slug: 'hydrolip', desc: "Прилипач-ад'ювант для пестицидів" },
-  { name: 'Ризобакт', slug: 'rizobakt', desc: 'Гуміфікатор стерні та ґрунту' },
-]
+// Для вітрини беремо по одному найхарактернішому препарату з кожної категорії
+const featured = categories
+  .map((c) => getProductsByCategory(c.slug)[0])
+  .filter(Boolean)
 
 export default function HomePage() {
   return (
@@ -29,8 +28,8 @@ export default function HomePage() {
               Препарати для<br />сучасного агробізнесу
             </h1>
             <p className="text-lg text-green-200 mb-8 max-w-xl">
-              Biostimulants та регулятори росту для підвищення врожайності і захисту рослин.
-              Перевірено на полях України.
+              Стимулятори росту, мікродобрива та засоби захисту рослин для підвищення
+              врожайності. Перевірено на полях України.
             </p>
             <div className="flex flex-wrap gap-4">
               <Link
@@ -43,47 +42,87 @@ export default function HomePage() {
                 href="/contacts"
                 className="border border-white text-white px-6 py-3 rounded hover:bg-white/10 transition-colors"
               >
-                Зв'язатись
+                Зв’язатись
               </Link>
             </div>
           </div>
         </section>
 
-        {/* Products grid */}
+        {/* Категорії */}
         <section className="py-16 px-4 bg-gray-50">
           <div className="max-w-6xl mx-auto">
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Наші препарати</h2>
-            <p className="text-gray-500 mb-8">Широка лінійка для всіх основних культур</p>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Категорії препаратів</h2>
+            <p className="text-gray-500 mb-8">
+              {products.length} препаратів у {categories.length} категоріях для всіх основних культур
+            </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {products.map((p) => (
+              {categories.map((c) => {
+                const count = getProductsByCategory(c.slug).length
+                return (
+                  <Link
+                    key={c.slug}
+                    href={`/preparaty#${c.slug}`}
+                    className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-md hover:border-green-300 transition-all group"
+                  >
+                    <div className="flex items-center justify-between mb-2">
+                      <h3 className="text-lg font-semibold text-gray-900 group-hover:text-green-700">
+                        {c.name}
+                      </h3>
+                      <span className="text-sm text-gray-400">{count}</span>
+                    </div>
+                    <p className="text-gray-500 text-sm">{c.description}</p>
+                  </Link>
+                )
+              })}
+            </div>
+          </div>
+        </section>
+
+        {/* Вітрина препаратів */}
+        <section className="py-16 px-4">
+          <div className="max-w-6xl mx-auto">
+            <div className="flex items-end justify-between mb-8">
+              <div>
+                <h2 className="text-2xl font-bold text-gray-900">Популярні препарати</h2>
+                <p className="text-gray-500 mt-1">По одному з кожної категорії</p>
+              </div>
+              <Link href="/preparaty" className="text-green-700 text-sm font-medium hover:underline whitespace-nowrap">
+                Дивитись всі →
+              </Link>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {featured.map((p) => (
                 <Link
                   key={p.slug}
                   href={`/preparaty/${p.slug}`}
-                  className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-md hover:border-green-300 transition-all group"
+                  className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-md hover:border-green-300 transition-all group flex flex-col"
                 >
-                  <h3 className="text-lg font-semibold text-gray-900 group-hover:text-green-700 mb-2">
-                    {p.name}
-                  </h3>
-                  <p className="text-gray-500 text-sm">{p.desc}</p>
-                  <span className="mt-4 inline-block text-green-700 text-sm font-medium group-hover:underline">
-                    Детальніше →
-                  </span>
+                  <div className="relative aspect-[4/3] bg-gray-50 flex items-center justify-center p-4">
+                    <Image
+                      src={p.image}
+                      alt={`${p.name} — препарат Rodonit для агробізнесу`}
+                      width={200}
+                      height={260}
+                      className="object-contain h-full w-auto"
+                    />
+                  </div>
+                  <div className="p-5 flex flex-col flex-1">
+                    <h3 className="text-lg font-semibold text-gray-900 group-hover:text-green-700 mb-2">
+                      {p.name}
+                    </h3>
+                    <p className="text-gray-500 text-sm flex-1">{p.shortDescription}</p>
+                    <span className="mt-4 text-green-700 text-sm font-medium group-hover:underline">
+                      Детальніше →
+                    </span>
+                  </div>
                 </Link>
               ))}
-            </div>
-            <div className="mt-8 text-center">
-              <Link
-                href="/preparaty"
-                className="inline-block border border-green-700 text-green-700 px-6 py-3 rounded hover:bg-green-50 transition-colors"
-              >
-                Дивитись всі препарати
-              </Link>
             </div>
           </div>
         </section>
 
-        {/* Why us */}
-        <section className="py-16 px-4">
+        {/* Чому ми */}
+        <section className="py-16 px-4 bg-gray-50">
           <div className="max-w-6xl mx-auto">
             <h2 className="text-2xl font-bold text-gray-900 mb-10">Чому обирають Rodonit</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -110,7 +149,7 @@ export default function HomePage() {
               href="/contacts"
               className="bg-white text-green-900 font-semibold px-8 py-3 rounded hover:bg-green-50 transition-colors"
             >
-              Зв'язатись з агрономом
+              Зв’язатись з агрономом
             </Link>
           </div>
         </section>

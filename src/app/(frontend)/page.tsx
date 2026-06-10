@@ -4,6 +4,7 @@ import Link from 'next/link'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import { categories, products, getProductsByCategory } from '@/data/products'
+import { productsCount } from '@/lib/plural'
 
 export const metadata: Metadata = {
   title: 'Rodonit Agro — Препарати для захисту та стимуляції рослин',
@@ -22,12 +23,12 @@ export default function HomePage() {
       <Header />
       <main>
         {/* Hero */}
-        <section className="bg-green-900 text-white py-20 px-4">
+        <section className="bg-[var(--green-deep)] text-white py-20 px-4">
           <div className="max-w-6xl mx-auto">
             <h1 className="text-4xl md:text-5xl font-bold mb-4 leading-tight">
               Препарати для<br />сучасного агробізнесу
             </h1>
-            <p className="text-lg text-green-200 mb-8 max-w-xl">
+            <p className="text-lg text-green-100/80 mb-8 max-w-xl">
               Стимулятори росту, мікродобрива та засоби захисту рослин для підвищення
               врожайності. Перевірено на полях України.
             </p>
@@ -40,7 +41,7 @@ export default function HomePage() {
               </Link>
               <Link
                 href="/contacts"
-                className="border border-white text-white px-6 py-3 rounded hover:bg-white/10 transition-colors"
+                className="border border-white/60 text-white px-6 py-3 rounded hover:bg-white/10 transition-colors"
               >
                 Зв’язатись
               </Link>
@@ -48,29 +49,37 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* Категорії */}
-        <section className="py-16 px-4 bg-gray-50">
+        {/* Категорії — один ряд з фото */}
+        <section className="py-16 px-4">
           <div className="max-w-6xl mx-auto">
             <h2 className="text-2xl font-bold text-gray-900 mb-2">Категорії препаратів</h2>
             <p className="text-gray-500 mb-8">
               {products.length} препаратів у {categories.length} категоріях для всіх основних культур
             </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
               {categories.map((c) => {
                 const count = getProductsByCategory(c.slug).length
                 return (
                   <Link
                     key={c.slug}
-                    href={`/preparaty#${c.slug}`}
-                    className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-md hover:border-green-300 transition-all group"
+                    href={`/preparaty?cat=${c.slug}`}
+                    className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-md hover:border-green-400 transition-all group flex flex-col text-center"
                   >
-                    <div className="flex items-center justify-between mb-2">
-                      <h3 className="text-lg font-semibold text-gray-900 group-hover:text-green-700">
+                    <div className="h-32 bg-[var(--green-soft)] flex items-center justify-center p-3">
+                      <Image
+                        src={c.image}
+                        alt={`${c.name} Rodonit`}
+                        width={90}
+                        height={110}
+                        className="object-contain max-h-28 w-auto"
+                      />
+                    </div>
+                    <div className="p-4 flex flex-col flex-1">
+                      <h3 className="font-semibold text-gray-900 group-hover:text-green-700 text-sm mb-1">
                         {c.name}
                       </h3>
-                      <span className="text-sm text-gray-400">{count}</span>
+                      <p className="text-xs text-gray-400 mt-auto">{productsCount(count)}</p>
                     </div>
-                    <p className="text-gray-500 text-sm">{c.description}</p>
                   </Link>
                 )
               })}
@@ -79,7 +88,7 @@ export default function HomePage() {
         </section>
 
         {/* Вітрина препаратів */}
-        <section className="py-16 px-4">
+        <section className="py-16 px-4 bg-white">
           <div className="max-w-6xl mx-auto">
             <div className="flex items-end justify-between mb-8">
               <div>
@@ -95,22 +104,22 @@ export default function HomePage() {
                 <Link
                   key={p.slug}
                   href={`/preparaty/${p.slug}`}
-                  className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-md hover:border-green-300 transition-all group flex flex-col"
+                  className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-md hover:border-green-400 transition-all group flex flex-col"
                 >
-                  <div className="relative aspect-[4/3] bg-gray-50 flex items-center justify-center p-4">
+                  <div className="h-52 bg-white border-b border-gray-100 flex items-center justify-center p-4">
                     <Image
                       src={p.image}
                       alt={`${p.name} — препарат Rodonit для агробізнесу`}
-                      width={200}
-                      height={260}
-                      className="object-contain h-full w-auto"
+                      width={180}
+                      height={200}
+                      className="object-contain max-h-44 w-auto"
                     />
                   </div>
                   <div className="p-5 flex flex-col flex-1">
                     <h3 className="text-lg font-semibold text-gray-900 group-hover:text-green-700 mb-2">
                       {p.name}
                     </h3>
-                    <p className="text-gray-500 text-sm flex-1">{p.shortDescription}</p>
+                    <p className="text-gray-500 text-sm flex-1 line-clamp-3">{p.shortDescription}</p>
                     <span className="mt-4 text-green-700 text-sm font-medium group-hover:underline">
                       Детальніше →
                     </span>
@@ -122,7 +131,7 @@ export default function HomePage() {
         </section>
 
         {/* Чому ми */}
-        <section className="py-16 px-4 bg-gray-50">
+        <section className="py-16 px-4">
           <div className="max-w-6xl mx-auto">
             <h2 className="text-2xl font-bold text-gray-900 mb-10">Чому обирають Rodonit</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -141,10 +150,10 @@ export default function HomePage() {
         </section>
 
         {/* CTA */}
-        <section className="py-16 px-4 bg-green-900 text-white">
+        <section className="py-16 px-4 bg-[var(--green-deep)] text-white">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-2xl font-bold mb-4">Маєте питання щодо препаратів?</h2>
-            <p className="text-green-200 mb-6">Наші агрономи допоможуть обрати правильний препарат для вашої культури</p>
+            <p className="text-green-100/80 mb-6">Наші агрономи допоможуть обрати правильний препарат для вашої культури</p>
             <Link
               href="/contacts"
               className="bg-white text-green-900 font-semibold px-8 py-3 rounded hover:bg-green-50 transition-colors"

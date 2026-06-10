@@ -2,7 +2,7 @@ import Link from 'next/link'
 
 export default function Footer() {
   return (
-    <footer className="bg-gray-900 text-gray-400 py-12 px-4 mt-auto">
+    <footer className="bg-[var(--green-deep)] text-green-100/70 py-12 px-4 mt-auto">
       <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
         <div>
           <p className="font-bold text-white text-lg mb-2">Rodonit Agro</p>
@@ -49,7 +49,7 @@ export default function Footer() {
           </div>
         </div>
       </div>
-      <div className="max-w-6xl mx-auto mt-8 pt-8 border-t border-gray-800 flex flex-wrap justify-between gap-4 text-xs text-gray-600">
+      <div className="max-w-6xl mx-auto mt-8 pt-8 border-t border-white/10 flex flex-wrap justify-between gap-4 text-xs text-green-100/50">
         <p>© {new Date().getFullYear()} Rodonit Agro. Всі права захищені.</p>
         <Link href="/privacy" className="hover:text-gray-400 transition-colors">
           Політика конфіденційності

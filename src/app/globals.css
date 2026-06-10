@@ -1,26 +1,28 @@
 @import "tailwindcss";
 
+/* Агро-палітра Rodonit: тепла кремова основа + природна зелень + земляні акценти */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f6f4ec;   /* тепла кремова */
+  --surface: #ffffff;      /* картки */
+  --foreground: #1c2b22;   /* глибокий темно-зелений текст */
+  --muted: #5d6b62;        /* приглушений */
+
+  --green-deep: #1f3d2b;   /* hero / footer */
+  --green: #2f6b43;        /* основний акцент */
+  --green-soft: #eaf1ea;   /* світлий зелений фон */
 }
 
 @theme inline {
   --color-background: var(--background);
+  --color-surface: var(--surface);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-brand: var(--green);
+  --color-brand-deep: var(--green-deep);
+  --font-sans: var(--font-inter);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-inter), system-ui, -apple-system, sans-serif;
 }

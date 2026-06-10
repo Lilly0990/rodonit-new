@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
+import { products } from '@/data/products'
 
 export const metadata: Metadata = {
   title: 'Про компанію',
@@ -30,9 +31,9 @@ export default function AboutPage() {
             </p>
             <p>
               Сьогодні основним напрямком для компанії «Родоніт Агро» є <strong>аграрний</strong>. За два
-              десятиріччя ми зібрали для аграріїв місткий портфель продукції з понад 20 найменувань, де
-              «Родоніт Агро» є реєстрантом. Частина продуктів — наше власне виробництво, деякі виробляються
-              на аутсорсингу, частина — імпортні за ексклюзивними контрактами, придбати які можна тільки у нас.
+              десятиріччя ми зібрали для аграріїв місткий портфель продукції, де «Родоніт Агро» є
+              реєстрантом. Частина продуктів — наше власне виробництво, деякі виробляються на аутсорсингу,
+              частина — імпортні за ексклюзивними контрактами, придбати які можна тільки у нас.
             </p>
             <p>
               «Родоніт Агро» завжди орієнтована на інновації. Ми знаходимось у постійному пошуку нових
@@ -51,7 +52,7 @@ export default function AboutPage() {
           <div className="grid grid-cols-3 gap-4 my-10">
             {[
               { value: '20+', label: 'років на ринку' },
-              { value: '20+', label: 'найменувань препаратів' },
+              { value: String(products.length), label: 'препаратів у каталозі' },
               { value: '100+', label: 'дослідів щороку' },
             ].map((s) => (
               <div key={s.label} className="bg-[var(--green-soft)] rounded-lg p-6 text-center">

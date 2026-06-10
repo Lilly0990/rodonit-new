@@ -28,7 +28,12 @@ export default function Footer() {
         </div>
         <div>
           <p className="font-semibold text-white mb-3">Контакти</p>
-          <p className="text-sm">rodonit.com.ua</p>
+          <ul className="space-y-1.5 text-sm">
+            <li><a href="tel:+380445023156" className="hover:text-white transition-colors">+38 (044) 502-31-56</a></li>
+            <li><a href="tel:+380674024414" className="hover:text-white transition-colors">+38 (067) 402-44-14</a></li>
+            <li><a href="mailto:info@rodonit-agro.com.ua" className="hover:text-white transition-colors">info@rodonit-agro.com.ua</a></li>
+            <li className="text-green-100/60">вул. Ю. Шумського, 1-б, оф. 117<br />Київ, 02140</li>
+          </ul>
           <div className="flex gap-4 mt-4">
             <a
               href="https://facebook.com/RodonitCompany"

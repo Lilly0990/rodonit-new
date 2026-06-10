@@ -24,10 +24,20 @@ export default function ContactsPage() {
               <h2 className="text-xl font-semibold text-gray-900 mb-6">Зв'яжіться з нами</h2>
               <div className="space-y-4 text-gray-600">
                 <div>
-                  <p className="font-medium text-gray-800">Сайт</p>
-                  <a href="https://rodonit.com.ua" className="text-green-700 hover:underline" target="_blank" rel="noopener noreferrer">
-                    rodonit.com.ua
+                  <p className="font-medium text-gray-800">Відділ збуту</p>
+                  <a href="tel:+380445023156" className="block text-green-700 hover:underline">+38 (044) 502-31-56</a>
+                  <a href="tel:+380445023157" className="block text-green-700 hover:underline">+38 (044) 502-31-57</a>
+                  <a href="tel:+380674024414" className="block text-green-700 hover:underline">+38 (067) 402-44-14</a>
+                </div>
+                <div>
+                  <p className="font-medium text-gray-800">Email</p>
+                  <a href="mailto:info@rodonit-agro.com.ua" className="text-green-700 hover:underline">
+                    info@rodonit-agro.com.ua
                   </a>
+                </div>
+                <div>
+                  <p className="font-medium text-gray-800">Поштова адреса</p>
+                  <p>вул. Ю. Шумського, 1-б, оф. 117<br />Київ, 02140, Україна</p>
                 </div>
                 <div>
                   <p className="font-medium text-gray-800">Соціальні мережі</p>

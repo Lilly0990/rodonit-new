@@ -4,8 +4,24 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
-import Accordion from '@/components/Accordion'
+import ProductDetails, { ContentSection } from '@/components/ProductDetails'
 import { products, getProduct, getCategory } from '@/data/products'
+import contentData from '@/data/products-content.json'
+
+type ProductContent = {
+  subtitle: string
+  about: string
+  uniqueness: string
+  hazard: string
+  form: string
+  shelf: string
+  ingredient: string
+  purpose: string
+  cultures: string[]
+  sections: ContentSection[]
+}
+
+const content: Record<string, ProductContent> = contentData as Record<string, ProductContent>
 
 export function generateStaticParams() {
   return products.map((p) => ({ slug: p.slug }))
@@ -40,75 +56,17 @@ export default async function ProductPage({
   if (!product) notFound()
 
   const category = getCategory(product.category)
+  const c = content[slug]
+  const subtitle = c?.subtitle || product.shortDescription
 
-  // Блок характеристик (праворуч від короткого опису)
+  // Характеристики (праворуч від фото)
   const specs = [
-    ['Діюча речовина', product.activeIngredient],
-    ['Призначення', product.purpose],
-    ['Клас небезпеки', product.hazardClass],
-    ['Форма випуску', product.form],
-    ['Термін придатності', product.shelfLife],
+    ['Діюча речовина', product.activeIngredient || c?.ingredient],
+    ['Призначення', product.purpose || c?.purpose],
+    ['Клас небезпеки', product.hazardClass || c?.hazard],
+    ['Форма випуску', product.form || c?.form],
+    ['Термін придатності', product.shelfLife || c?.shelf],
   ].filter(([, v]) => v) as [string, string][]
-
-  // Акордеон «Опис продукту»
-  const accordionItems = []
-
-  const descBlocks: React.ReactNode[] = []
-  if (product.about) descBlocks.push(<p key="about" className="mb-3">{product.about}</p>)
-  if (product.uniqueness)
-    descBlocks.push(
-      <div key="uniq">
-        <p className="font-medium text-gray-800 mb-1">Унікальність препарату</p>
-        <p>{product.uniqueness}</p>
-      </div>,
-    )
-  if (descBlocks.length) {
-    accordionItems.push({ title: 'Опис продукту', content: <div className="space-y-3">{descBlocks}</div> })
-  }
-
-  if (specs.length) {
-    accordionItems.push({
-      title: 'Характеристики',
-      content: (
-        <dl className="divide-y divide-gray-100">
-          {specs.map(([k, v]) => (
-            <div key={k} className="flex flex-col sm:flex-row sm:gap-4 py-2">
-              <dt className="text-gray-500 sm:w-48 shrink-0">{k}</dt>
-              <dd className="text-gray-800">{v}</dd>
-            </div>
-          ))}
-        </dl>
-      ),
-    })
-  }
-
-  if (product.applications?.length) {
-    accordionItems.push({
-      title: 'Регламент застосування',
-      content: (
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm border-collapse">
-            <thead>
-              <tr className="bg-green-50 text-left">
-                <th className="border border-gray-200 px-3 py-2 font-medium text-gray-700">Культура</th>
-                <th className="border border-gray-200 px-3 py-2 font-medium text-gray-700">Фаза розвитку</th>
-                <th className="border border-gray-200 px-3 py-2 font-medium text-gray-700 whitespace-nowrap">Норма</th>
-              </tr>
-            </thead>
-            <tbody>
-              {product.applications.map((row, i) => (
-                <tr key={i} className="align-top">
-                  <td className="border border-gray-200 px-3 py-2 font-medium text-gray-800">{row.culture}</td>
-                  <td className="border border-gray-200 px-3 py-2 text-gray-600">{row.phase}</td>
-                  <td className="border border-gray-200 px-3 py-2 text-gray-800 whitespace-nowrap">{row.rate}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      ),
-    })
-  }
 
   return (
     <>
@@ -148,12 +106,25 @@ export default async function ProductPage({
               <span className="text-xs font-medium text-green-800 bg-green-100 px-2.5 py-1 rounded">
                 {category?.name}
               </span>
-              <h1 className="text-3xl font-bold text-gray-900 mt-4 mb-4">{product.name}</h1>
-              <p className="text-gray-600 mb-6">{product.shortDescription}</p>
+              <h1 className="text-3xl font-bold text-gray-900 mt-4 mb-3">{product.name}</h1>
+              {subtitle && <p className="text-gray-600 mb-6">{subtitle}</p>}
+
+              {/* Опис / Унікальність (короткий вступ) */}
+              {(c?.about || c?.uniqueness) && (
+                <div className="space-y-3 mb-6 text-sm text-gray-600">
+                  {c.about && <p>{c.about}</p>}
+                  {c.uniqueness && (
+                    <div>
+                      <p className="font-medium text-gray-800 mb-1">Унікальність препарату</p>
+                      <p>{c.uniqueness}</p>
+                    </div>
+                  )}
+                </div>
+              )}
 
               {specs.length > 0 && (
                 <dl className="space-y-2.5 border-t border-gray-200 pt-6">
-                  {specs.slice(0, 3).map(([k, v]) => (
+                  {specs.map(([k, v]) => (
                     <div key={k} className="flex flex-col sm:flex-row sm:gap-4">
                       <dt className="text-sm font-medium text-gray-500 sm:w-44 shrink-0">{k}</dt>
                       <dd className="text-sm text-gray-800">{v}</dd>
@@ -179,11 +150,25 @@ export default async function ProductPage({
             </div>
           </div>
 
-          {/* Акордеон з повним описом */}
-          {accordionItems.length > 0 && (
-            <div className="mt-12 max-w-4xl">
+          {/* Культури застосування */}
+          {c?.cultures?.length > 0 && (
+            <div className="mt-12">
+              <h2 className="text-lg font-bold text-gray-900 mb-3">Застосування на культурах</h2>
+              <div className="flex flex-wrap gap-2">
+                {c.cultures.map((cult) => (
+                  <span key={cult} className="text-sm bg-green-50 text-green-800 px-3 py-1.5 rounded-full">
+                    {cult}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Повний опис — акордеон */}
+          {c?.sections?.length > 0 && (
+            <div className="mt-10 max-w-4xl">
               <h2 className="text-xl font-bold text-gray-900 mb-4">Детальна інформація</h2>
-              <Accordion items={accordionItems} defaultOpen={0} />
+              <ProductDetails sections={c.sections} applications={product.applications} />
             </div>
           )}
         </div>

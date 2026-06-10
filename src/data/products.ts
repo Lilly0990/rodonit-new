@@ -48,7 +48,7 @@ export const categories: Category[] = [
     slug: 'mikrodobryva',
     name: 'Мікродобрива',
     description: 'Корекція дефіциту кальцію, бору, міді, цинку та гумінових речовин.',
-    image: '/products/verno-sav.jpg',
+    image: '/products/verno-sav.png',
   },
   {
     slug: 'fungitsydy',
@@ -126,7 +126,7 @@ export const products: Product[] = [
     slug: 'verno-sav',
     name: 'Верно СаВ',
     category: 'mikrodobryva',
-    image: '/products/verno-sav.jpg',
+    image: '/products/verno-sav.png',
     shortDescription:
       'Корекція дефіциту кальцію й бору. Запобігає розтріскуванню плодів та фізіологічним розладам рослин.',
     activeIngredient: 'Оксид кальцію + оксид бору (кальцій (Ca) 16%, бор (B) 9,0%)',

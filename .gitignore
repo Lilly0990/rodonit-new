@@ -45,3 +45,5 @@ next-env.d.ts
 *.db-journal
 /public/media
 src/payload-types.ts
+
+.vercel

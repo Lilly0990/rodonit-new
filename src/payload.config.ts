@@ -1,6 +1,7 @@
 import { buildConfig } from 'payload'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import { sqliteAdapter } from '@payloadcms/db-sqlite'
+import { postgresAdapter } from '@payloadcms/db-postgres'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import sharp from 'sharp'
@@ -346,13 +347,16 @@ export default buildConfig({
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
 
-  db: sqliteAdapter({
-    client: {
-      url: process.env.DATABASE_URL || 'file:./rodonit.db',
-    },
-    // синхронізувати схему з БД автоматично (MVP; для прод-міграцій замінити на payload migrate)
-    push: true,
-  }),
+  // На Vercel (є POSTGRES_URL від Neon) — Postgres; локально — SQLite-файл.
+  db: process.env.POSTGRES_URL
+    ? postgresAdapter({
+        pool: { connectionString: process.env.POSTGRES_URL },
+        push: true,
+      })
+    : sqliteAdapter({
+        client: { url: process.env.DATABASE_URL || 'file:./rodonit.db' },
+        push: true,
+      }),
 
   sharp,
 

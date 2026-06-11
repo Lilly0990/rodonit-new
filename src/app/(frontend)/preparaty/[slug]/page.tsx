@@ -90,14 +90,13 @@ export default async function ProductPage({
         <div className="max-w-6xl mx-auto px-4 py-12">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
             {/* Фото */}
-            <div className="rounded-lg border border-gray-100 flex items-center justify-center p-8 min-h-[360px]" style={{ background: '#f6f4ec' }}>
+            <div className="bg-white rounded-lg border border-gray-100 flex items-center justify-center p-8 min-h-[360px]">
               <Image
                 src={product.image}
                 alt={`${product.name} — ${category?.name.toLowerCase()} для агробізнесу від Rodonit`}
                 width={394}
                 height={518}
                 className="object-contain max-h-[480px] w-auto"
-                style={{ mixBlendMode: 'multiply' }}
                 priority
               />
             </div>

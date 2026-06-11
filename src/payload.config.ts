@@ -347,16 +347,19 @@ export default buildConfig({
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
 
-  // На Vercel (є POSTGRES_URL від Neon) — Postgres; локально — SQLite-файл.
-  db: process.env.POSTGRES_URL
-    ? postgresAdapter({
-        pool: { connectionString: process.env.POSTGRES_URL },
-        push: true,
-      })
-    : sqliteAdapter({
-        client: { url: process.env.DATABASE_URL || 'file:./rodonit.db' },
-        push: true,
-      }),
+  // На Vercel (Neon) — Postgres; локально — SQLite-файл.
+  // Neon додає DATABASE_URL (postgres://...) або POSTGRES_URL.
+  db: (() => {
+    const pgUrl =
+      process.env.POSTGRES_URL ||
+      (process.env.DATABASE_URL?.startsWith('postgres') ? process.env.DATABASE_URL : undefined)
+    return pgUrl
+      ? postgresAdapter({ pool: { connectionString: pgUrl }, push: true })
+      : sqliteAdapter({
+          client: { url: process.env.DATABASE_URL || 'file:./rodonit.db' },
+          push: true,
+        })
+  })(),
 
   sharp,
 

@@ -55,7 +55,7 @@ export default function ProductFilter({
                 alt={`${p.name} — препарат Rodonit для агробізнесу`}
                 width={180}
                 height={200}
-                className="object-contain max-h-44 w-auto"
+                className="object-contain max-h-44 w-auto mix-blend-multiply"
               />
             </div>
             <div className="p-5 flex flex-col flex-1">

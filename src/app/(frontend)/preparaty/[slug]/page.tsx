@@ -96,7 +96,7 @@ export default async function ProductPage({
                 alt={`${product.name} — ${category?.name.toLowerCase()} для агробізнесу від Rodonit`}
                 width={394}
                 height={518}
-                className="object-contain max-h-[480px] w-auto"
+                className="object-contain max-h-[480px] w-auto mix-blend-multiply"
                 priority
               />
             </div>

@@ -49,13 +49,14 @@ export default function ProductFilter({
             href={`/preparaty/${p.slug}`}
             className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-md hover:border-green-400 transition-all group flex flex-col"
           >
-            <div className="h-52 bg-white border-b border-gray-100 flex items-center justify-center p-4">
+            <div className="h-52 border-b border-gray-100 flex items-center justify-center p-4" style={{ background: '#f6f4ec' }}>
               <Image
                 src={p.image}
                 alt={`${p.name} — препарат Rodonit для агробізнесу`}
                 width={180}
                 height={200}
-                className="object-contain max-h-44 w-auto mix-blend-multiply"
+                className="object-contain max-h-44 w-auto"
+                style={{ mixBlendMode: 'multiply' }}
               />
             </div>
             <div className="p-5 flex flex-col flex-1">

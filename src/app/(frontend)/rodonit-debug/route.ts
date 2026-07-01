@@ -176,6 +176,7 @@ export async function POST(req: NextRequest) {
         id varchar PRIMARY KEY,
         text varchar NOT NULL,
         _order integer NOT NULL,
+        _locale varchar(10),
         _parent_id varchar NOT NULL
       )`)
 
@@ -241,6 +242,7 @@ export async function POST(req: NextRequest) {
         id varchar PRIMARY KEY,
         text varchar NOT NULL,
         _order integer NOT NULL,
+        _locale varchar(10),
         _parent_id varchar NOT NULL
       )`)
 

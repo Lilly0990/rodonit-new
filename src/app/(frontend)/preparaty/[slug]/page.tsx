@@ -6,7 +6,7 @@ import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import ProductDetails from '@/components/ProductDetails'
 import type { ContentSection } from '@/components/ProductDetails'
-import { getAllProducts, getProductBySlug } from '@/lib/cms'
+import { getProductBySlug } from '@/lib/cms'
 
 export const dynamic = 'force-dynamic'
 
@@ -15,11 +15,6 @@ const CATEGORY_NAMES: Record<string, string> = {
   mikrodobryva: 'Мікродобрива',
   fungitsydy: 'Фунгіциди',
   adyuvanty: "Ад'юванти",
-}
-
-export async function generateStaticParams() {
-  const products = await getAllProducts()
-  return products.map((p) => ({ slug: p.slug }))
 }
 
 export async function generateMetadata({

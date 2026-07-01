@@ -14,7 +14,11 @@ export const maxDuration = 60
 const SECRET = 'rodonit-debug-2026'
 
 async function exec(db: any, sql: string) {
-  return db.execute({ drizzle: db.drizzle, raw: sql })
+  // payload.db.pool = postgres-js Sql connection; .unsafe() runs raw strings
+  if (typeof db?.pool?.unsafe === 'function') return db.pool.unsafe(sql)
+  // fallback: drizzle-orm sql.raw
+  const { sql: drizzleSql } = await import('drizzle-orm')
+  return db.drizzle.execute(drizzleSql.raw(sql))
 }
 
 export async function GET(req: NextRequest) {
@@ -58,6 +62,11 @@ export async function POST(req: NextRequest) {
     const payload = await getPayload({ config })
     const db = payload.db as any
     const log: string[] = []
+    // diagnostic: show what db exposes
+    const dbKeys = db ? Object.keys(db).join(',') : 'db=null'
+    log.push(`🔍 db.keys: ${dbKeys}`)
+    log.push(`🔍 pool.unsafe: ${typeof db?.pool?.unsafe}`)
+    log.push(`🔍 drizzle: ${typeof db?.drizzle}`)
 
     const run = async (label: string, sql: string) => {
       try {

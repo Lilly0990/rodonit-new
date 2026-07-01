@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "tsx src/scripts/push-schema.ts && next build",
     "start": "next start",
     "lint": "eslint",
     "seed": "tsx src/scripts/seed.ts"

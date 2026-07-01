@@ -176,7 +176,7 @@ export async function POST(req: NextRequest) {
         id varchar PRIMARY KEY,
         text varchar NOT NULL,
         _order integer NOT NULL,
-        _parent_id integer NOT NULL REFERENCES products_sections(id) ON DELETE CASCADE
+        _parent_id varchar NOT NULL REFERENCES products_sections(id) ON DELETE CASCADE
       )`)
 
     // ── _products_v нові колонки ──────────────────────────────────────────
@@ -241,7 +241,7 @@ export async function POST(req: NextRequest) {
         id varchar PRIMARY KEY,
         text varchar NOT NULL,
         _order integer NOT NULL,
-        _parent_id integer NOT NULL REFERENCES _products_v_version_sections(id) ON DELETE CASCADE
+        _parent_id varchar NOT NULL REFERENCES _products_v_version_sections(id) ON DELETE CASCADE
       )`)
 
     // ── distributors (нова колекція) ──────────────────────────────────────

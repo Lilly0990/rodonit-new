@@ -61,12 +61,26 @@ export async function POST(req: NextRequest) {
   try {
     const payload = await getPayload({ config })
     const db = payload.db as any
+
+    // Raw SQL mode: POST body {sql:"..."} or {sql:["...","..."]} — run ad-hoc without redeploy
+    let body: any = null
+    try { body = await req.json() } catch {}
+    if (body?.sql) {
+      const stmts = Array.isArray(body.sql) ? body.sql : [body.sql]
+      const out: any[] = []
+      for (const s of stmts) {
+        try {
+          const r = await exec(db, s)
+          out.push({ ok: true, sql: s.slice(0, 60), rows: Array.isArray(r) ? r : (r?.rows ?? r) })
+        } catch (e: any) {
+          out.push({ ok: false, sql: s.slice(0, 60), error: e?.message })
+        }
+      }
+      await db.destroy?.()
+      return NextResponse.json({ ok: true, mode: 'raw', out })
+    }
+
     const log: string[] = []
-    // diagnostic: show what db exposes
-    const dbKeys = db ? Object.keys(db).join(',') : 'db=null'
-    log.push(`🔍 db.keys: ${dbKeys}`)
-    log.push(`🔍 pool.unsafe: ${typeof db?.pool?.unsafe}`)
-    log.push(`🔍 drizzle: ${typeof db?.drizzle}`)
 
     const run = async (label: string, sql: string) => {
       try {

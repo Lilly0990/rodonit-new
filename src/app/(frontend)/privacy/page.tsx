@@ -2,6 +2,8 @@ import type { Metadata } from 'next'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 
+export const dynamic = 'force-dynamic'
+
 export const metadata: Metadata = {
   title: 'Політика конфіденційності',
   description: 'Політика конфіденційності та використання файлів cookie на сайті Rodonit Agro',

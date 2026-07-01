@@ -18,14 +18,15 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    const toEmail = process.env.CONTACT_EMAIL || 'info@rodonit-agro.com.ua'
+    const toEmail = process.env.CONTACT_EMAIL || 'reklama@rodonit.com.ua'
 
     // ── Надсилаємо email ────────────────────────────────────────────────────
     if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
+      const port = Number(process.env.SMTP_PORT || 465)
       const transporter = nodemailer.createTransport({
         host: process.env.SMTP_HOST,
-        port: Number(process.env.SMTP_PORT || 587),
-        secure: process.env.SMTP_SECURE === 'true',
+        port,
+        secure: port === 465,
         auth: {
           user: process.env.SMTP_USER,
           pass: process.env.SMTP_PASS,
@@ -60,7 +61,6 @@ export async function POST(req: NextRequest) {
         html: htmlBody,
       })
     } else {
-      // Dev fallback — просто логуємо
       console.log('[contact form]', { name, phone, senderEmail, message })
     }
 

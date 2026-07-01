@@ -1,28 +1,51 @@
 import Image from 'next/image'
 import Link from 'next/link'
+import { getSettings } from '@/lib/cms'
 
-const nav = [
+const navLinks = [
   { label: 'Препарати', href: '/preparaty' },
-  { label: 'Техносхеми', href: '/tehno-shemi' },
-  { label: 'Результати', href: '/result' },
-  { label: 'Новини', href: '/blog' },
+  { label: 'Блог', href: '/blog' },
+  { label: "Дистриб'ютори", href: '/distributors' },
   { label: 'Про компанію', href: '/about' },
   { label: 'Контакти', href: '/contacts' },
 ]
 
-export default function Header() {
+export default async function Header() {
+  const settings = await getSettings()
+  const firstPhone = settings.phones?.[0]?.number ?? null
+
   return (
     <header className="bg-white border-b border-gray-200 sticky top-0 z-40">
+      {/* Топ-бар з телефоном */}
+      {firstPhone && (
+        <div className="bg-green-900 text-white text-xs py-1.5 px-4 text-center hidden lg:block">
+          <a href={`tel:${firstPhone.replace(/[^\d+]/g, '')}`} className="hover:underline">
+            {firstPhone}
+          </a>
+          {settings.email && (
+            <>
+              {' '}·{' '}
+              <a href={`mailto:${settings.email}`} className="hover:underline">
+                {settings.email}
+              </a>
+            </>
+          )}
+        </div>
+      )}
+
       <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-3">
           <Image src="/logo.png" alt="Родоніт Агро" width={40} height={40} className="w-10 h-10" />
           <span className="flex flex-col leading-tight">
             <span className="font-bold text-green-900 text-lg tracking-tight">Родоніт Агро</span>
-            <span className="text-[10px] text-gray-400 uppercase tracking-wide">Технології підвищення врожайності</span>
+            <span className="text-[10px] text-gray-400 uppercase tracking-wide">
+              Технології підвищення врожайності
+            </span>
           </span>
         </Link>
+
         <nav className="hidden lg:flex items-center gap-5">
-          {nav.map((item) => (
+          {navLinks.map((item) => (
             <Link
               key={item.href}
               href={item.href}
@@ -32,11 +55,17 @@ export default function Header() {
             </Link>
           ))}
         </nav>
+
         <Link
           href="/contacts"
           className="hidden lg:block bg-green-700 text-white text-sm px-4 py-2 rounded hover:bg-green-600 transition-colors"
         >
           Замовити консультацію
+        </Link>
+
+        {/* Мобільне меню — посилання */}
+        <Link href="/contacts" className="lg:hidden text-green-700 text-sm font-medium">
+          Зв'язатись
         </Link>
       </div>
     </header>

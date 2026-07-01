@@ -2,13 +2,23 @@ import type { Metadata } from 'next'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import ProductFilter from '@/components/ProductFilter'
-import { categories, products } from '@/data/products'
+import { getAllProducts } from '@/lib/cms'
+import type { CategoryUi } from '@/components/ProductFilter'
+
+export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
   title: 'Препарати для захисту і стимуляції рослин',
   description:
-    'Лінійка препаратів Rodonit за категоріями: стимулятори росту, мікродобрива, фунгіциди, ад’юванти та деструктори стерні.',
+    "Лінійка препаратів Rodonit за категоріями: стимулятори росту, мікродобрива, фунгіциди, ад'юванти.",
 }
+
+const CATEGORIES: CategoryUi[] = [
+  { slug: 'stymulyatory', name: 'Стимулятори росту' },
+  { slug: 'mikrodobryva', name: 'Мікродобрива' },
+  { slug: 'fungitsydy', name: 'Фунгіциди' },
+  { slug: 'adyuvanty', name: "Ад'юванти" },
+]
 
 export default async function PreparatyPage({
   searchParams,
@@ -16,7 +26,8 @@ export default async function PreparatyPage({
   searchParams: Promise<{ cat?: string }>
 }) {
   const { cat } = await searchParams
-  const initialCat = cat && categories.some((c) => c.slug === cat) ? cat : 'all'
+  const initialCat = cat && CATEGORIES.some((c) => c.slug === cat) ? cat : 'all'
+  const products = await getAllProducts()
 
   return (
     <>
@@ -32,7 +43,7 @@ export default async function PreparatyPage({
         </div>
 
         <div className="max-w-6xl mx-auto px-4 py-12">
-          <ProductFilter categories={categories} products={products} initialCat={initialCat} />
+          <ProductFilter categories={CATEGORIES} products={products} initialCat={initialCat} />
         </div>
       </main>
       <Footer />

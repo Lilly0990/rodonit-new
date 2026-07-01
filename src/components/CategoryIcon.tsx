@@ -34,14 +34,6 @@ const icons: Record<CategorySlug, React.ReactNode> = {
       d="M5 13c4-1 7-4 9-9 2 5 5 8 5 11a7 7 0 0 1-14 0m2.5-1.5c1.5-.5 3-1.5 4-3"
     />
   ),
-  // Деструктори стерні — цикл/переробка
-  destruktory: (
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      d="M4 9a8 8 0 0 1 13-3l2 2m0-4v4h-4M20 15a8 8 0 0 1-13 3l-2-2m0 4v-4h4"
-    />
-  ),
 }
 
 export default function CategoryIcon({ slug, className = 'w-8 h-8' }: { slug: CategorySlug; className?: string }) {

@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import { getArticleBySlug } from '@/lib/cms'
+import VideoEmbed from '@/components/VideoEmbed'
 
 const SITE = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'
 
@@ -102,6 +103,15 @@ export default async function ArticlePage({
               ),
             )}
           </div>
+
+          {/* Відео YouTube / TikTok */}
+          {(article.embeds ?? []).length > 0 && (
+            <div className="mt-8">
+              {(article.embeds ?? []).map((embed, i) => (
+                <VideoEmbed key={i} url={embed.url} caption={embed.caption} />
+              ))}
+            </div>
+          )}
 
           <footer className="mt-12 pt-8 border-t border-gray-200">
             <Link href="/blog" className="text-green-700 font-medium hover:underline">

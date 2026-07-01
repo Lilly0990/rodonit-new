@@ -3,8 +3,8 @@ import Link from 'next/link'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import CategoryIcon from '@/components/CategoryIcon'
-import { categories, products, getProductsByCategory } from '@/data/products'
-import { getAllArticles } from '@/lib/cms'
+import type { CategorySlug } from '@/data/products'
+import { getAllProducts, getAllArticles } from '@/lib/cms'
 import { productsCount } from '@/lib/plural'
 
 export const dynamic = 'force-dynamic'
@@ -12,24 +12,34 @@ export const dynamic = 'force-dynamic'
 export const metadata: Metadata = {
   title: 'Rodonit Agro — Препарати для захисту та стимуляції рослин',
   description:
-    'Препарати для агробізнесу України: стимулятори росту, мікродобрива, фунгіциди, ад’юванти. Зеребра АГРО, MIRA LIFE, Верно, Гідролип та інші.',
+    "Препарати для агробізнесу України: стимулятори росту, мікродобрива, фунгіциди, ад'юванти. Сільвер Мікс, Міра РК, Верно, Гідролип та інші.",
 }
 
-// «Три-Е» — запатентована технологія компанії (з оригінального сайту)
+const CATEGORIES = [
+  { slug: 'stymulyatory' as CategorySlug, name: 'Стимулятори росту', description: 'Активують природні процеси рослини: проростання, кореневу систему, імунітет.' },
+  { slug: 'mikrodobryva' as CategorySlug, name: 'Мікродобрива', description: 'Корекція дефіциту кальцію, бору, міді, цинку та гумінових речовин.' },
+  { slug: 'fungitsydy' as CategorySlug, name: 'Фунгіциди', description: 'Мідьвмісний захист рослин від грибкових і бактеріальних хвороб.' },
+  { slug: 'adyuvanty' as CategorySlug, name: "Ад'юванти", description: 'Прилипачі, що покращують утримання робочих розчинів на рослині.' },
+]
+
 const threeE = [
   { letter: 'Е', title: 'Екологічно', text: 'Вирощування екологічно чистої продукції, відновлення родючості ґрунту, захист урожаю від хімічних і токсичних стресів.' },
   { letter: 'Е', title: 'Економічно', text: 'Оптимальні витрати — максимальний урожай. Зниження кількості пестицидів і хімічного навантаження на ґрунт.' },
   { letter: 'Е', title: 'Ефективно', text: 'Підтверджена ефективність препаратів: вищі прибутки, врожайність, якість продукції та родючість ґрунтів.' },
 ]
 
-const stats = [
-  { value: '20+', label: 'років на ринку' },
-  { value: String(products.length), label: 'препаратів у каталозі' },
-  { value: '100+', label: 'дослідів щороку' },
-]
-
 export default async function HomePage() {
-  const latestArticles = (await getAllArticles()).slice(0, 3)
+  const [products, latestArticles] = await Promise.all([
+    getAllProducts(),
+    getAllArticles().then((a) => a.slice(0, 3)),
+  ])
+
+  const stats = [
+    { value: '20+', label: 'років на ринку' },
+    { value: String(products.length), label: 'препаратів у каталозі' },
+    { value: '100+', label: 'дослідів щороку' },
+  ]
+
   return (
     <>
       <Header />
@@ -58,22 +68,22 @@ export default async function HomePage() {
                 href="/contacts"
                 className="border border-white/60 text-white px-6 py-3 rounded hover:bg-white/10 transition-colors"
               >
-                Зв’язатись
+                Зв'язатись
               </Link>
             </div>
           </div>
         </section>
 
-        {/* Категорії — один ряд з іконками */}
+        {/* Категорії */}
         <section className="py-16 px-4">
           <div className="max-w-6xl mx-auto">
             <h2 className="text-2xl font-bold text-gray-900 mb-2">Категорії препаратів</h2>
             <p className="text-gray-500 mb-8">
-              {products.length} препаратів у {categories.length} категоріях для всіх основних культур
+              {products.length} препаратів у {CATEGORIES.length} категоріях для всіх основних культур
             </p>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-              {categories.map((c) => {
-                const count = getProductsByCategory(c.slug).length
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {CATEGORIES.map((c) => {
+                const count = products.filter((p) => p.category === c.slug).length
                 return (
                   <Link
                     key={c.slug}
@@ -95,7 +105,7 @@ export default async function HomePage() {
           </div>
         </section>
 
-        {/* Про компанію — вітальний текст + статистика + кнопка */}
+        {/* Про компанію */}
         <section className="py-16 px-4 bg-white">
           <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
@@ -151,50 +161,60 @@ export default async function HomePage() {
           </div>
         </section>
 
-        {/* Новини / Статті — реальні */}
-        <section className="py-16 px-4 bg-white">
-          <div className="max-w-6xl mx-auto">
-            <div className="flex items-end justify-between mb-8">
-              <div>
-                <h2 className="text-2xl font-bold text-gray-900">Новини та статті</h2>
-                <p className="text-gray-500 mt-1">Події компанії та корисне про агрономію</p>
-              </div>
-              <Link href="/blog" className="text-green-700 text-sm font-medium hover:underline whitespace-nowrap">
-                Усі статті →
-              </Link>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {latestArticles.map((a) => (
-                <Link
-                  key={a.slug}
-                  href={`/blog/${a.slug}`}
-                  className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-md hover:border-green-400 transition-all group flex flex-col"
-                >
-                  <div className="h-40 bg-[var(--green-soft)] flex items-center justify-center">
-                    <span className="text-green-700/40 text-5xl font-bold">R</span>
-                  </div>
-                  <div className="p-5 flex flex-col flex-1">
-                    <span className="text-xs font-medium text-green-700 bg-green-50 px-2 py-0.5 rounded w-fit mb-2">{a.category}</span>
-                    <h3 className="font-semibold text-gray-900 group-hover:text-green-700 mb-2 line-clamp-2">{a.title}</h3>
-                    <p className="text-sm text-gray-500 flex-1 line-clamp-3">{a.excerpt}</p>
-                    <span className="mt-4 text-green-700 text-sm font-medium group-hover:underline">Читати →</span>
-                  </div>
+        {/* Новини / Статті */}
+        {latestArticles.length > 0 && (
+          <section className="py-16 px-4 bg-white">
+            <div className="max-w-6xl mx-auto">
+              <div className="flex items-end justify-between mb-8">
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900">Новини та статті</h2>
+                  <p className="text-gray-500 mt-1">Події компанії та корисне про агрономію</p>
+                </div>
+                <Link href="/blog" className="text-green-700 text-sm font-medium hover:underline whitespace-nowrap">
+                  Усі статті →
                 </Link>
-              ))}
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {latestArticles.map((a) => (
+                  <Link
+                    key={a.slug}
+                    href={`/blog/${a.slug}`}
+                    className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-md hover:border-green-400 transition-all group flex flex-col"
+                  >
+                    <div className="h-40 bg-[var(--green-soft)] flex items-center justify-center">
+                      <span className="text-green-700/40 text-5xl font-bold">R</span>
+                    </div>
+                    <div className="p-5 flex flex-col flex-1">
+                      <span className="text-xs font-medium text-green-700 bg-green-50 px-2 py-0.5 rounded w-fit mb-2">
+                        {a.category}
+                      </span>
+                      <h3 className="font-semibold text-gray-900 group-hover:text-green-700 mb-2 line-clamp-2">
+                        {a.title}
+                      </h3>
+                      <p className="text-sm text-gray-500 flex-1 line-clamp-3">{a.excerpt}</p>
+                      <span className="mt-4 text-green-700 text-sm font-medium group-hover:underline">
+                        Читати →
+                      </span>
+                    </div>
+                  </Link>
+                ))}
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
+        )}
 
         {/* CTA */}
         <section className="py-16 px-4 bg-[var(--green-deep)] text-white">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-2xl font-bold mb-4">Маєте питання щодо препаратів?</h2>
-            <p className="text-green-100/80 mb-6">Наші агрономи допоможуть обрати правильний препарат для вашої культури</p>
+            <p className="text-green-100/80 mb-6">
+              Наші агрономи допоможуть обрати правильний препарат для вашої культури
+            </p>
             <Link
               href="/contacts"
               className="bg-white text-green-900 font-semibold px-8 py-3 rounded hover:bg-green-50 transition-colors"
             >
-              Зв’язатись з агрономом
+              Зв'язатись з агрономом
             </Link>
           </div>
         </section>

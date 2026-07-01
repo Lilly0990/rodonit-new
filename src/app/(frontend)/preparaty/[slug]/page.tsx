@@ -4,26 +4,21 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
-import ProductDetails, { ContentSection } from '@/components/ProductDetails'
-import { products, getProduct, getCategory } from '@/data/products'
-import contentData from '@/data/products-content.json'
+import ProductDetails from '@/components/ProductDetails'
+import type { ContentSection } from '@/components/ProductDetails'
+import { getAllProducts, getProductBySlug } from '@/lib/cms'
 
-type ProductContent = {
-  subtitle: string
-  about: string
-  uniqueness: string
-  hazard: string
-  form: string
-  shelf: string
-  ingredient: string
-  purpose: string
-  cultures: string[]
-  sections: ContentSection[]
+export const dynamic = 'force-dynamic'
+
+const CATEGORY_NAMES: Record<string, string> = {
+  stymulyatory: 'Стимулятори росту',
+  mikrodobryva: 'Мікродобрива',
+  fungitsydy: 'Фунгіциди',
+  adyuvanty: "Ад'юванти",
 }
 
-const content: Record<string, ProductContent> = contentData as Record<string, ProductContent>
-
-export function generateStaticParams() {
+export async function generateStaticParams() {
+  const products = await getAllProducts()
   return products.map((p) => ({ slug: p.slug }))
 }
 
@@ -33,15 +28,15 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>
 }): Promise<Metadata> {
   const { slug } = await params
-  const product = getProduct(slug)
+  const product = await getProductBySlug(slug)
   if (!product) return { title: 'Препарат не знайдено' }
   return {
-    title: product.name,
-    description: product.shortDescription,
+    title: product.metaTitle || product.name,
+    description: product.metaDescription || product.shortDescription || undefined,
     openGraph: {
-      title: product.name,
-      description: product.shortDescription,
-      images: [{ url: product.image }],
+      title: product.metaTitle || product.name,
+      description: product.metaDescription || product.shortDescription || undefined,
+      images: product.mainImage?.url ? [{ url: product.mainImage.url }] : [],
     },
   }
 }
@@ -52,21 +47,35 @@ export default async function ProductPage({
   params: Promise<{ slug: string }>
 }) {
   const { slug } = await params
-  const product = getProduct(slug)
+  const product = await getProductBySlug(slug)
   if (!product) notFound()
 
-  const category = getCategory(product.category)
-  const c = content[slug]
-  const subtitle = c?.subtitle || product.shortDescription
+  const categoryName = CATEGORY_NAMES[product.category] ?? product.category
+  const imgSrc = product.mainImage?.url ?? `/products/${product.slug}.png`
+  const imgAlt =
+    product.mainImage?.alt ?? `${product.name} — ${categoryName.toLowerCase()} для агробізнесу`
 
-  // Характеристики (праворуч від фото)
+  // Характеристики
   const specs = [
-    ['Діюча речовина', product.activeIngredient || c?.ingredient],
-    ['Призначення', product.purpose || c?.purpose],
-    ['Клас небезпеки', product.hazardClass || c?.hazard],
-    ['Форма випуску', product.form || c?.form],
-    ['Термін придатності', product.shelfLife || c?.shelf],
+    ['Діюча речовина', product.activeIngredient],
+    ['Призначення', product.purpose],
+    ['Клас небезпеки', product.hazardClass],
+    ['Форма випуску', product.form],
+    ['Термін придатності', product.shelfLife],
   ].filter(([, v]) => v) as [string, string][]
+
+  // Акордеон-секції з Payload (sections array)
+  const sections: ContentSection[] = (product.sections ?? []).map((s) => ({
+    heading: s.heading,
+    paragraphs: (s.paragraphs ?? []).map((p) => p.text),
+  }))
+
+  // Таблиця регламентів
+  const applications = (product.applications ?? []).map((row) => ({
+    culture: row.culture,
+    phase: row.phase,
+    rate: row.rate,
+  }))
 
   return (
     <>
@@ -80,7 +89,7 @@ export default async function ProductPage({
             <Link href="/preparaty" className="hover:text-green-700">Препарати</Link>
             <span>/</span>
             <Link href={`/preparaty?cat=${product.category}`} className="hover:text-green-700">
-              {category?.name}
+              {categoryName}
             </Link>
             <span>/</span>
             <span className="text-gray-800">{product.name}</span>
@@ -92,8 +101,8 @@ export default async function ProductPage({
             {/* Фото */}
             <div className="bg-white rounded-lg border border-gray-100 flex items-center justify-center p-8 min-h-[360px]">
               <Image
-                src={product.image}
-                alt={`${product.name} — ${category?.name.toLowerCase()} для агробізнесу від Rodonit`}
+                src={imgSrc}
+                alt={imgAlt}
                 width={394}
                 height={518}
                 className="object-contain max-h-[480px] w-auto"
@@ -104,24 +113,29 @@ export default async function ProductPage({
             {/* Інфо */}
             <div>
               <span className="text-xs font-medium text-green-800 bg-green-100 px-2.5 py-1 rounded">
-                {category?.name}
+                {categoryName}
               </span>
               <h1 className="text-3xl font-bold text-gray-900 mt-4 mb-3">{product.name}</h1>
-              {subtitle && <p className="text-gray-600 mb-6">{subtitle}</p>}
+              {(product.subtitle || product.shortDescription) && (
+                <p className="text-gray-600 mb-6">
+                  {product.subtitle || product.shortDescription}
+                </p>
+              )}
 
-              {/* Опис / Унікальність (короткий вступ) */}
-              {(c?.about || c?.uniqueness) && (
+              {/* Про препарат */}
+              {(product.about || product.uniqueness) && (
                 <div className="space-y-3 mb-6 text-sm text-gray-600">
-                  {c.about && <p>{c.about}</p>}
-                  {c.uniqueness && (
+                  {product.about && <p>{product.about}</p>}
+                  {product.uniqueness && (
                     <div>
                       <p className="font-medium text-gray-800 mb-1">Унікальність препарату</p>
-                      <p>{c.uniqueness}</p>
+                      <p>{product.uniqueness}</p>
                     </div>
                   )}
                 </div>
               )}
 
+              {/* Характеристики */}
               {specs.length > 0 && (
                 <dl className="space-y-2.5 border-t border-gray-200 pt-6">
                   {specs.map(([k, v]) => (
@@ -151,24 +165,27 @@ export default async function ProductPage({
           </div>
 
           {/* Культури застосування */}
-          {c?.cultures?.length > 0 && (
+          {(product.cultures ?? []).length > 0 && (
             <div className="mt-12">
               <h2 className="text-lg font-bold text-gray-900 mb-3">Застосування на культурах</h2>
               <div className="flex flex-wrap gap-2">
-                {c.cultures.map((cult) => (
-                  <span key={cult} className="text-sm bg-green-50 text-green-800 px-3 py-1.5 rounded-full">
-                    {cult}
+                {(product.cultures ?? []).map((cult) => (
+                  <span
+                    key={cult.name}
+                    className="text-sm bg-green-50 text-green-800 px-3 py-1.5 rounded-full"
+                  >
+                    {cult.name}
                   </span>
                 ))}
               </div>
             </div>
           )}
 
-          {/* Повний опис — акордеон */}
-          {c?.sections?.length > 0 && (
+          {/* Детальна інформація — акордеон */}
+          {(sections.length > 0 || applications.length > 0) && (
             <div className="mt-10 max-w-4xl">
               <h2 className="text-xl font-bold text-gray-900 mb-4">Детальна інформація</h2>
-              <ProductDetails sections={c.sections} applications={product.applications} />
+              <ProductDetails sections={sections} applications={applications} />
             </div>
           )}
         </div>

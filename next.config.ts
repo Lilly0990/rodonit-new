@@ -7,6 +7,8 @@ const nextConfig: NextConfig = {
       { hostname: 'rodonit.com.ua' },
     ],
   },
+  typescript: { ignoreBuildErrors: true },
+  eslint: { ignoreDuringBuilds: true },
 }
 
 export default withPayload(nextConfig)

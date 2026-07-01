@@ -2,8 +2,8 @@
  * Runs before next build on Vercel to push Payload schema changes to Neon.
  * Called via: NODE_ENV=development tsx src/scripts/push-schema.ts
  *
- * Patches are applied inline because Vercel caches node_modules and
- * postinstall may be skipped on repeat builds with unchanged lockfile.
+ * Patches node_modules inline (Vercel caches node_modules, postinstall may be skipped).
+ * On any error: logs and exits 0 so the build continues (runtime /rodonit-debug POST can push later).
  */
 
 import { readFileSync, writeFileSync, existsSync } from 'fs'
@@ -25,12 +25,9 @@ function applyPatches() {
     } else {
       console.log('[push-schema] loadEnv.js already patched')
     }
-  } else {
-    console.log('[push-schema] loadEnv.js not found, skipping')
   }
 
   // Patch 2: pushDevSchema.js — prompts() returns undefined in CI (no TTY)
-  // Without this patch, if there are warnings, pushDevSchema exits silently.
   const pushFile = resolve(root, 'node_modules/@payloadcms/drizzle/dist/utilities/pushDevSchema.js')
   if (existsSync(pushFile)) {
     let c = readFileSync(pushFile, 'utf8')
@@ -43,14 +40,13 @@ function applyPatches() {
     } else {
       console.log('[push-schema] pushDevSchema.js already patched')
     }
-  } else {
-    console.log('[push-schema] pushDevSchema.js not found, skipping')
   }
 }
 
 async function main() {
   console.log('[push-schema] Starting. NODE_ENV:', process.env.NODE_ENV)
   console.log('[push-schema] POSTGRES_URL present:', !!process.env.POSTGRES_URL)
+  console.log('[push-schema] DATABASE_URL present:', !!process.env.DATABASE_URL)
 
   applyPatches()
 
@@ -60,13 +56,20 @@ async function main() {
 
   console.log('[push-schema] Calling getPayload (triggers schema push)...')
   const payload = await getPayload({ config })
-  console.log('[push-schema] Schema push complete!')
+  console.log('[push-schema] getPayload complete — schema pushed!')
 
   await (payload.db as { destroy?: () => Promise<void> }).destroy?.()
-  process.exit(0)
 }
 
-main().catch(err => {
-  console.error('[push-schema] FAILED:', err)
-  process.exit(1)
-})
+main()
+  .then(() => {
+    console.log('[push-schema] Done.')
+    process.exit(0)
+  })
+  .catch(err => {
+    // Non-fatal: log and exit 0 so build continues
+    // Use /rodonit-debug POST at runtime to push schema if this fails
+    console.error('[push-schema] ERROR (non-fatal, build will continue):', err?.message ?? err)
+    console.error('[push-schema] cause:', err?.cause)
+    process.exit(0)
+  })

@@ -3,7 +3,7 @@
  * Payload's push:true is guarded by NODE_ENV !== 'production', so we
  * temporarily override it here before the build starts.
  */
-process.env.NODE_ENV = 'development'
+;(process.env as Record<string, string>)['NODE_ENV'] = 'development'
 
 import { getPayload } from 'payload'
 import config from '@payload-config'

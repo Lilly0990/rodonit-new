@@ -68,8 +68,26 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    // ── DROP array tables (recreate with correct id varchar type) ────────
+    // Payload uses id varchar (hex) for array tables, id integer (serial) for collections
+    await run('DROP _products_v_version_sections_paragraphs', `DROP TABLE IF EXISTS _products_v_version_sections_paragraphs`)
+    await run('DROP _products_v_version_sections',            `DROP TABLE IF EXISTS _products_v_version_sections`)
+    await run('DROP _products_v_version_applications',        `DROP TABLE IF EXISTS _products_v_version_applications`)
+    await run('DROP _products_v_version_cultures',            `DROP TABLE IF EXISTS _products_v_version_cultures`)
+    await run('DROP _products_v_version_locales',             `DROP TABLE IF EXISTS _products_v_version_locales`)
+    await run('DROP _distributors_v_version_phones',          `DROP TABLE IF EXISTS _distributors_v_version_phones`)
+    await run('DROP distributors_phones',                     `DROP TABLE IF EXISTS distributors_phones`)
+    await run('DROP products_sections_paragraphs',            `DROP TABLE IF EXISTS products_sections_paragraphs`)
+    await run('DROP products_sections',                       `DROP TABLE IF EXISTS products_sections`)
+    await run('DROP products_applications',                   `DROP TABLE IF EXISTS products_applications`)
+    await run('DROP products_cultures',                       `DROP TABLE IF EXISTS products_cultures`)
+    await run('DROP products_locales',                        `DROP TABLE IF EXISTS products_locales`)
+    await run('DROP settings_phones',                         `DROP TABLE IF EXISTS settings_phones`)
+    await run('DROP settings_locales',                        `DROP TABLE IF EXISTS settings_locales`)
+    await run('DROP articles_locales',                        `DROP TABLE IF EXISTS articles_locales`)
+    await run('DROP _articles_v_version_locales',             `DROP TABLE IF EXISTS _articles_v_version_locales`)
+
     // ── CLEANUP: видалити старі дані (seed перестворить всі) ─────────────
-    // Видаляємо через Payload ORM або SQL, щоб уникнути FK-конфліктів
     await run('DELETE articles_paragraphs', `DELETE FROM articles_paragraphs`)
     await run('DELETE _articles_v_version_paragraphs', `DELETE FROM _articles_v_version_paragraphs`)
     await run('DELETE _articles_v', `DELETE FROM _articles_v`)
@@ -96,7 +114,7 @@ export async function POST(req: NextRequest) {
     // ── products_locales (всі локалізовані поля) ──────────────────────────
     await run('CREATE products_locales', `
       CREATE TABLE IF NOT EXISTS products_locales (
-        id serial PRIMARY KEY,
+        id varchar PRIMARY KEY,
         name varchar,
         short_description varchar,
         subtitle varchar,
@@ -116,7 +134,7 @@ export async function POST(req: NextRequest) {
     // ── products_cultures ─────────────────────────────────────────────────
     await run('CREATE products_cultures', `
       CREATE TABLE IF NOT EXISTS products_cultures (
-        id serial PRIMARY KEY,
+        id varchar PRIMARY KEY,
         name varchar NOT NULL,
         _order integer NOT NULL,
         _parent_id integer NOT NULL REFERENCES products(id) ON DELETE CASCADE
@@ -125,7 +143,7 @@ export async function POST(req: NextRequest) {
     // ── products_applications ─────────────────────────────────────────────
     await run('CREATE products_applications', `
       CREATE TABLE IF NOT EXISTS products_applications (
-        id serial PRIMARY KEY,
+        id varchar PRIMARY KEY,
         culture varchar NOT NULL,
         phase varchar NOT NULL,
         rate varchar NOT NULL,
@@ -136,7 +154,7 @@ export async function POST(req: NextRequest) {
     // ── products_sections (локалізований масив) ───────────────────────────
     await run('CREATE products_sections', `
       CREATE TABLE IF NOT EXISTS products_sections (
-        id serial PRIMARY KEY,
+        id varchar PRIMARY KEY,
         heading varchar NOT NULL,
         _order integer NOT NULL,
         _locale varchar(10) NOT NULL,
@@ -146,7 +164,7 @@ export async function POST(req: NextRequest) {
     // ── products_sections_paragraphs ──────────────────────────────────────
     await run('CREATE products_sections_paragraphs', `
       CREATE TABLE IF NOT EXISTS products_sections_paragraphs (
-        id serial PRIMARY KEY,
+        id varchar PRIMARY KEY,
         text varchar NOT NULL,
         _order integer NOT NULL,
         _parent_id integer NOT NULL REFERENCES products_sections(id) ON DELETE CASCADE
@@ -161,7 +179,7 @@ export async function POST(req: NextRequest) {
     // ── _products_v_version_locales ───────────────────────────────────────
     await run('CREATE _products_v_version_locales', `
       CREATE TABLE IF NOT EXISTS _products_v_version_locales (
-        id serial PRIMARY KEY,
+        id varchar PRIMARY KEY,
         version_name varchar,
         version_short_description varchar,
         version_subtitle varchar,
@@ -181,7 +199,7 @@ export async function POST(req: NextRequest) {
     // ── _products_v_version_cultures ──────────────────────────────────────
     await run('CREATE _products_v_version_cultures', `
       CREATE TABLE IF NOT EXISTS _products_v_version_cultures (
-        id serial PRIMARY KEY,
+        id varchar PRIMARY KEY,
         name varchar NOT NULL,
         _order integer NOT NULL,
         _parent_id integer NOT NULL REFERENCES _products_v(id) ON DELETE CASCADE
@@ -190,7 +208,7 @@ export async function POST(req: NextRequest) {
     // ── _products_v_version_applications ─────────────────────────────────
     await run('CREATE _products_v_version_applications', `
       CREATE TABLE IF NOT EXISTS _products_v_version_applications (
-        id serial PRIMARY KEY,
+        id varchar PRIMARY KEY,
         culture varchar NOT NULL,
         phase varchar NOT NULL,
         rate varchar NOT NULL,
@@ -201,7 +219,7 @@ export async function POST(req: NextRequest) {
     // ── _products_v_version_sections ──────────────────────────────────────
     await run('CREATE _products_v_version_sections', `
       CREATE TABLE IF NOT EXISTS _products_v_version_sections (
-        id serial PRIMARY KEY,
+        id varchar PRIMARY KEY,
         heading varchar NOT NULL,
         _order integer NOT NULL,
         _locale varchar(10) NOT NULL,
@@ -211,7 +229,7 @@ export async function POST(req: NextRequest) {
     // ── _products_v_version_sections_paragraphs ───────────────────────────
     await run('CREATE _products_v_version_sections_paragraphs', `
       CREATE TABLE IF NOT EXISTS _products_v_version_sections_paragraphs (
-        id serial PRIMARY KEY,
+        id varchar PRIMARY KEY,
         text varchar NOT NULL,
         _order integer NOT NULL,
         _parent_id integer NOT NULL REFERENCES _products_v_version_sections(id) ON DELETE CASCADE
@@ -234,7 +252,7 @@ export async function POST(req: NextRequest) {
     // ── distributors_phones ───────────────────────────────────────────────
     await run('CREATE distributors_phones', `
       CREATE TABLE IF NOT EXISTS distributors_phones (
-        id serial PRIMARY KEY,
+        id varchar PRIMARY KEY,
         number varchar NOT NULL,
         _order integer NOT NULL,
         _parent_id integer NOT NULL REFERENCES distributors(id) ON DELETE CASCADE
@@ -262,7 +280,7 @@ export async function POST(req: NextRequest) {
     // ── _distributors_v_version_phones ────────────────────────────────────
     await run('CREATE _distributors_v_version_phones', `
       CREATE TABLE IF NOT EXISTS _distributors_v_version_phones (
-        id serial PRIMARY KEY,
+        id varchar PRIMARY KEY,
         number varchar NOT NULL,
         _order integer NOT NULL,
         _parent_id integer NOT NULL REFERENCES _distributors_v(id) ON DELETE CASCADE
@@ -271,7 +289,7 @@ export async function POST(req: NextRequest) {
     // ── articles_locales (title + excerpt тепер локалізовані) ─────────────
     await run('CREATE articles_locales', `
       CREATE TABLE IF NOT EXISTS articles_locales (
-        id serial PRIMARY KEY,
+        id varchar PRIMARY KEY,
         title varchar,
         excerpt varchar,
         _locale varchar(10) NOT NULL,
@@ -286,7 +304,7 @@ export async function POST(req: NextRequest) {
     // ── _articles_v_version_locales ───────────────────────────────────────
     await run('CREATE _articles_v_version_locales', `
       CREATE TABLE IF NOT EXISTS _articles_v_version_locales (
-        id serial PRIMARY KEY,
+        id varchar PRIMARY KEY,
         version_title varchar,
         version_excerpt varchar,
         _locale varchar(10) NOT NULL,
@@ -309,7 +327,7 @@ export async function POST(req: NextRequest) {
     // ── settings_phones ───────────────────────────────────────────────────
     await run('CREATE settings_phones', `
       CREATE TABLE IF NOT EXISTS settings_phones (
-        id serial PRIMARY KEY,
+        id varchar PRIMARY KEY,
         number varchar NOT NULL,
         label varchar,
         _order integer NOT NULL,
@@ -319,7 +337,7 @@ export async function POST(req: NextRequest) {
     // ── settings_locales (seoDefault — локалізована група) ────────────────
     await run('CREATE settings_locales', `
       CREATE TABLE IF NOT EXISTS settings_locales (
-        id serial PRIMARY KEY,
+        id varchar PRIMARY KEY,
         seo_default_title varchar,
         seo_default_description varchar,
         _locale varchar(10) NOT NULL,

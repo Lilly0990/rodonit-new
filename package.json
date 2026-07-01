@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "postinstall": "node scripts/patch-payload.cjs",
     "build": "tsx src/scripts/push-schema.ts && next build",
     "start": "next start",
     "lint": "eslint",

@@ -177,6 +177,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: true, results })
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err)
-    return NextResponse.json({ ok: false, error: message, results }, { status: 500 })
+    const cause = err instanceof Error ? String((err as NodeJS.ErrnoException & { cause?: unknown }).cause ?? '') : ''
+    return NextResponse.json({ ok: false, error: message, cause, results }, { status: 500 })
   }
 }

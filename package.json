@@ -16,6 +16,7 @@
     "@payloadcms/next": "^3.85.1",
     "@payloadcms/richtext-lexical": "^3.85.1",
     "@types/nodemailer": "^8.0.1",
+    "drizzle-kit": "^0.31.7",
     "next": "16.2.9",
     "nodemailer": "^9.0.3",
     "payload": "^3.85.1",

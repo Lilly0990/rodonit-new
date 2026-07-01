@@ -9,6 +9,8 @@ const nextConfig: NextConfig = {
   },
   typescript: { ignoreBuildErrors: true },
   eslint: { ignoreDuringBuilds: true },
+  // Keep drizzle-kit external so Turbopack doesn't hash-transform require('drizzle-kit/api')
+  serverExternalPackages: ['drizzle-kit'],
 }
 
 export default withPayload(nextConfig)

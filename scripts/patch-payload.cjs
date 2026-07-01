@@ -1,4 +1,4 @@
-// Patches Payload internals that break in non-interactive (CI/Vercel) environments
+// Patches Payload/drizzle-kit internals for non-interactive (CI/Vercel) schema push
 
 const fs = require('fs')
 const path = require('path')
@@ -33,5 +33,63 @@ if (fs.existsSync(pushFile)) {
     console.log('[patch] Fixed @payloadcms/drizzle pushDevSchema.js (CI non-interactive mode)')
   } else {
     console.log('[patch] pushDevSchema.js already patched')
+  }
+}
+
+// Patch 3: drizzle-kit/api.js — tablesResolver/columnsResolver show interactive rename prompts
+// In CI/Lambda: hanji.render() hangs waiting for stdin keypress → push never completes
+// Fix: replace resolvers with auto-create (never rename)
+const drizzleApiFile = path.join(__dirname, '..', 'node_modules', 'drizzle-kit', 'api.js')
+if (fs.existsSync(drizzleApiFile)) {
+  let c = fs.readFileSync(drizzleApiFile, 'utf8')
+  if (!c.includes('AUTO-PATCH: always create new tables')) {
+    c = c.replace(
+      `    tablesResolver = async (input) => {
+      try {
+        const { created, deleted, moved, renamed } = await promptNamedWithSchemasConflict(
+          input.created,
+          input.deleted,
+          "table"
+        );
+        return {
+          created,
+          deleted,
+          moved,
+          renamed
+        };
+      } catch (e6) {
+        console.error(e6);
+        throw e6;
+      }
+    };`,
+      `    tablesResolver = async (input) => {
+      // AUTO-PATCH: always create new tables, never rename (CI/non-interactive)
+      return { created: input.created, deleted: input.deleted, moved: [], renamed: [] };
+    };`
+    )
+    c = c.replace(
+      `    columnsResolver = async (input) => {
+      const result = await promptColumnsConflicts(
+        input.tableName,
+        input.created,
+        input.deleted
+      );
+      return {
+        tableName: input.tableName,
+        schema: input.schema,
+        created: result.created,
+        deleted: result.deleted,
+        renamed: result.renamed
+      };
+    };`,
+      `    columnsResolver = async (input) => {
+      // AUTO-PATCH: always create new columns, never rename (CI/non-interactive)
+      return { tableName: input.tableName, schema: input.schema, created: input.created, deleted: input.deleted, renamed: [] };
+    };`
+    )
+    fs.writeFileSync(drizzleApiFile, c)
+    console.log('[patch] Fixed drizzle-kit/api.js (tablesResolver/columnsResolver — auto-create)')
+  } else {
+    console.log('[patch] drizzle-kit/api.js already patched')
   }
 }

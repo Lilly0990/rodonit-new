@@ -41,6 +41,64 @@ function applyPatches() {
       console.log('[push-schema] pushDevSchema.js already patched')
     }
   }
+
+  // Patch 3: drizzle-kit/api.js — tablesResolver/columnsResolver hang waiting for stdin
+  // In CI/Lambda (non-TTY), hanji.render() never resolves → push hangs forever
+  // Fix: auto-resolve to "create new" without prompting
+  const drizzleApiFile = resolve(root, 'node_modules/drizzle-kit/api.js')
+  if (existsSync(drizzleApiFile)) {
+    let c = readFileSync(drizzleApiFile, 'utf8')
+    if (!c.includes('AUTO-PATCH: always create new tables')) {
+      c = c.replace(
+        `    tablesResolver = async (input) => {
+      try {
+        const { created, deleted, moved, renamed } = await promptNamedWithSchemasConflict(
+          input.created,
+          input.deleted,
+          "table"
+        );
+        return {
+          created,
+          deleted,
+          moved,
+          renamed
+        };
+      } catch (e6) {
+        console.error(e6);
+        throw e6;
+      }
+    };`,
+        `    tablesResolver = async (input) => {
+      // AUTO-PATCH: always create new tables, never rename (CI/non-interactive)
+      return { created: input.created, deleted: input.deleted, moved: [], renamed: [] };
+    };`
+      )
+      c = c.replace(
+        `    columnsResolver = async (input) => {
+      const result = await promptColumnsConflicts(
+        input.tableName,
+        input.created,
+        input.deleted
+      );
+      return {
+        tableName: input.tableName,
+        schema: input.schema,
+        created: result.created,
+        deleted: result.deleted,
+        renamed: result.renamed
+      };
+    };`,
+        `    columnsResolver = async (input) => {
+      // AUTO-PATCH: always create new columns, never rename (CI/non-interactive)
+      return { tableName: input.tableName, schema: input.schema, created: input.created, deleted: input.deleted, renamed: [] };
+    };`
+      )
+      writeFileSync(drizzleApiFile, c)
+      console.log('[push-schema] Patched drizzle-kit/api.js (tablesResolver/columnsResolver)')
+    } else {
+      console.log('[push-schema] drizzle-kit/api.js already patched')
+    }
+  }
 }
 
 async function main() {

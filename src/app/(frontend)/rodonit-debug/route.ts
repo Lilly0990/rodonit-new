@@ -123,7 +123,7 @@ export async function POST(req: NextRequest) {
     // ── products_locales (всі локалізовані поля) ──────────────────────────
     await run('CREATE products_locales', `
       CREATE TABLE IF NOT EXISTS products_locales (
-        id varchar PRIMARY KEY,
+        id serial PRIMARY KEY,
         name varchar,
         short_description varchar,
         subtitle varchar,
@@ -188,7 +188,7 @@ export async function POST(req: NextRequest) {
     // ── _products_v_version_locales ───────────────────────────────────────
     await run('CREATE _products_v_version_locales', `
       CREATE TABLE IF NOT EXISTS _products_v_version_locales (
-        id varchar PRIMARY KEY,
+        id serial PRIMARY KEY,
         version_name varchar,
         version_short_description varchar,
         version_subtitle varchar,
@@ -298,7 +298,7 @@ export async function POST(req: NextRequest) {
     // ── articles_locales (title + excerpt тепер локалізовані) ─────────────
     await run('CREATE articles_locales', `
       CREATE TABLE IF NOT EXISTS articles_locales (
-        id varchar PRIMARY KEY,
+        id serial PRIMARY KEY,
         title varchar,
         excerpt varchar,
         _locale varchar(10) NOT NULL,
@@ -313,7 +313,7 @@ export async function POST(req: NextRequest) {
     // ── _articles_v_version_locales ───────────────────────────────────────
     await run('CREATE _articles_v_version_locales', `
       CREATE TABLE IF NOT EXISTS _articles_v_version_locales (
-        id varchar PRIMARY KEY,
+        id serial PRIMARY KEY,
         version_title varchar,
         version_excerpt varchar,
         _locale varchar(10) NOT NULL,
@@ -346,7 +346,7 @@ export async function POST(req: NextRequest) {
     // ── settings_locales (seoDefault — локалізована група) ────────────────
     await run('CREATE settings_locales', `
       CREATE TABLE IF NOT EXISTS settings_locales (
-        id varchar PRIMARY KEY,
+        id serial PRIMARY KEY,
         seo_default_title varchar,
         seo_default_description varchar,
         _locale varchar(10) NOT NULL,

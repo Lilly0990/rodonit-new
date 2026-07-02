@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /api/
+
+Sitemap: https://rodonit-new.vercel.app/sitemap.xml
+Host: https://rodonit-new.vercel.app

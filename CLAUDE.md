@@ -27,8 +27,10 @@
   Фікс: `ALTER TABLE ..._rels ADD COLUMN distributors_id integer REFERENCES distributors(id)`.
   → При додаванні БУДЬ-ЯКОЇ нової колекції додавати {collection}_id у ці дві rels-таблиці.
 - **Фото Сільвер Мікс 404**: seed НЕ вантажив media (collection порожня). Frontend fallback
-  `/products/{slug}.png`. silver-mix slug≠файл (файл zerebra-agro.png = колишня Зеребра Агро).
-  Фікс: cp zerebra-agro.png → silver-mix.png. Решта продуктів мали правильні файли за slug.
+  `/products/{slug}.png`. silver-mix не мав файла. Решта продуктів мали правильні файли за slug.
+  Фікс: справжнє фото нової упаковки Silver Mix → `Desktop\Проєкти\Rodonit\Silver Mix.png`
+  (зелена каністра). УВАГА: zerebra-agro.png — це СТАРА упаковка з написом «Зеребра Агро»,
+  НЕ використовувати для silver-mix (плутанина брендів, хоч продукт той самий).
 
 ## Наступний крок
 - Немає критичних. Опційно: фото у CMS media (зараз static fallback), EN-локалізація, тест контакт-форми.

@@ -9,6 +9,15 @@
 - ✅ Перший адмін: reklama@rodonit.com.ua (пароль тимчасовий, Олег міняє в профілі /admin → Account)
 - ✅ /rodonit-debug + /rodonit-seed ВИДАЛЕНО (commit 61b0d40) — безпека
 - ✅ SMTP env vars на Vercel (mail.adm.tools:465, reklama@rodonit.com.ua)
+- ✅ Блог покращено (02.07): 7 обкладинок (Pollinations Flux → public/blog/{slug}.jpg),
+  rich-структура статей (заголовки h2 + списки), cover-hero + типографіка.
+
+## Блог — як оновлювати
+- Cover: статичний `public/blog/{slug}.jpg` (fallback у рендері; media/Blob НЕ налаштовано).
+- Контент статей (paragraphs) у Neon — оновлювати через Payload REST API PATCH з JWT-токеном
+  (endpoints видалені; seed/debug більше немає). Скрипт-зразок: scratchpad/rich_update.py.
+  PATCH /api/articles/{id}?locale=uk  body {"paragraphs":[{"text","isHeading"}]}.
+- Рендер blog/[slug]: renderBlocks() — рядок "• ..." групується в <ul>, isHeading→h2.
 
 ## КЛЮЧОВІ УРОКИ (типи id в Payload 3.x Postgres)
 - Collection/global tables (products, distributors, settings, articles): `id serial` (integer)

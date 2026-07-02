@@ -20,9 +20,19 @@
 - exec() в endpoint: drizzle.execute першим (стабільний), НЕ викликати db.destroy() (закриває pool на warm lambda!)
 - /rodonit-debug POST з body {sql:[...]} = raw SQL mode (фікси без деплою)
 
+## Виправлено після першого деплою (02.07)
+- **Адмінка падала 500** (`Failed query ... payload_locked_documents__rels`): нова колекція distributors
+  потребує колонку `distributors_id` у `payload_locked_documents_rels` І `payload_preferences_rels`.
+  УВАГА: реальна назва таблиці `payload_locked_documents_rels` (ОДНЕ _), не `__rels` (два)!
+  Фікс: `ALTER TABLE ..._rels ADD COLUMN distributors_id integer REFERENCES distributors(id)`.
+  → При додаванні БУДЬ-ЯКОЇ нової колекції додавати {collection}_id у ці дві rels-таблиці.
+- **Фото Сільвер Мікс 404**: seed НЕ вантажив media (collection порожня). Frontend fallback
+  `/products/{slug}.png`. silver-mix slug≠файл (файл zerebra-agro.png = колишня Зеребра Агро).
+  Фікс: cp zerebra-agro.png → silver-mix.png. Решта продуктів мали правильні файли за slug.
+
 ## Наступний крок
-- Немає критичних. Опційно: EN-локалізація контенту (Олег заповнює в адмінці), перевірка контакт-форми (реальний тест листа на reklama@).
-- Якщо треба знову мігрувати схему — endpoints видалені; підняти тимчасово з git history (commit 47991fb) або через Payload push локально.
+- Немає критичних. Опційно: фото у CMS media (зараз static fallback), EN-локалізація, тест контакт-форми.
+- Якщо треба знову мігрувати схему — endpoints видалені; підняти з git history (commit 47991fb).
 
 ## Технічні деталі
 - Repo: Lilly0990/rodonit-new → rodonit-new.vercel.app

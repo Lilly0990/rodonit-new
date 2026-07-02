@@ -14,11 +14,22 @@ export const maxDuration = 60
 const SECRET = 'rodonit-debug-2026'
 
 async function exec(db: any, sql: string) {
-  // payload.db.pool = postgres-js Sql connection; .unsafe() runs raw strings
-  if (typeof db?.pool?.unsafe === 'function') return db.pool.unsafe(sql)
-  // fallback: drizzle-orm sql.raw
   const { sql: drizzleSql } = await import('drizzle-orm')
-  return db.drizzle.execute(drizzleSql.raw(sql))
+  const raw = drizzleSql.raw(sql)
+  // Try every known execution surface; pools may be closed on warm lambdas.
+  const drz = db?.drizzle ?? db?.db
+  if (drz && typeof drz.execute === 'function') {
+    const r = await drz.execute(raw)
+    return Array.isArray(r) ? { rows: r } : r
+  }
+  if (typeof db?.pool?.unsafe === 'function') {
+    const rows = await db.pool.unsafe(sql)
+    return { rows }
+  }
+  if (typeof db?.pool?.query === 'function') {
+    return db.pool.query(sql)
+  }
+  throw new Error('no exec surface: db keys = ' + Object.keys(db ?? {}).join(','))
 }
 
 export async function GET(req: NextRequest) {
@@ -47,7 +58,6 @@ export async function GET(req: NextRequest) {
       cols[r.table_name].push(`${r.column_name}:${r.data_type}`)
     }
 
-    await db.destroy?.()
     return NextResponse.json({ ok: true, tables, count: tables.length, cols })
   } catch (err: any) {
     return NextResponse.json({ ok: false, error: err?.message ?? String(err), cause: String(err?.cause ?? '') })
@@ -76,7 +86,6 @@ export async function POST(req: NextRequest) {
           out.push({ ok: false, sql: s.slice(0, 60), error: e?.message })
         }
       }
-      await db.destroy?.()
       return NextResponse.json({ ok: true, mode: 'raw', out })
     }
 
@@ -370,7 +379,6 @@ export async function POST(req: NextRequest) {
         UNIQUE(_locale, _parent_id)
       )`)
 
-    await db.destroy?.()
     return NextResponse.json({ ok: true, log, total: log.length })
   } catch (err: any) {
     return NextResponse.json({

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import Image from 'next/image'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import { getAllArticles } from '@/lib/cms'
@@ -37,8 +38,14 @@ export default async function BlogPage() {
                   href={`/blog/${a.slug}`}
                   className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-md hover:border-green-400 transition-all group flex flex-col"
                 >
-                  <div className="h-40 bg-[var(--green-soft)] flex items-center justify-center">
-                    <span className="text-green-700/40 text-5xl font-bold">R</span>
+                  <div className="relative h-44 bg-[var(--green-soft)] overflow-hidden">
+                    <Image
+                      src={a.coverImage?.url ?? `/blog/${a.slug}.jpg`}
+                      alt={a.coverImage?.alt ?? a.title}
+                      fill
+                      sizes="(max-width: 768px) 100vw, 33vw"
+                      className="object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
                   </div>
                   <div className="p-5 flex flex-col flex-1">
                     <span className="text-xs font-medium text-green-700 bg-green-50 px-2 py-0.5 rounded w-fit mb-2">

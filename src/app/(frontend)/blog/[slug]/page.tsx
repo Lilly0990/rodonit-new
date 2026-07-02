@@ -1,14 +1,51 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import { getArticleBySlug } from '@/lib/cms'
 import VideoEmbed from '@/components/VideoEmbed'
+import { JSX } from 'react'
 
 const SITE = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'
 
 export const dynamic = 'force-dynamic'
+
+// Рендерить блоки статті: заголовки → h2, рядки з "• " групуються в <ul>, решта → <p>
+function renderBlocks(blocks: { text: string; isHeading?: boolean | null }[]): JSX.Element[] {
+  const out: JSX.Element[] = []
+  let list: string[] = []
+  const flush = () => {
+    if (list.length) {
+      out.push(
+        <ul key={`ul-${out.length}`} className="list-disc pl-6 space-y-2 marker:text-green-600">
+          {list.map((t, j) => <li key={j}>{t}</li>)}
+        </ul>,
+      )
+      list = []
+    }
+  }
+  for (const b of blocks) {
+    const text = b.text ?? ''
+    if (!b.isHeading && text.startsWith('• ')) {
+      list.push(text.slice(2))
+      continue
+    }
+    flush()
+    if (b.isHeading) {
+      out.push(
+        <h2 key={`h-${out.length}`} className="text-2xl font-bold text-gray-900 mt-10 mb-3 leading-snug">
+          {text}
+        </h2>,
+      )
+    } else {
+      out.push(<p key={`p-${out.length}`}>{text}</p>)
+    }
+  }
+  flush()
+  return out
+}
 
 export async function generateMetadata({
   params,
@@ -92,16 +129,20 @@ export default async function ArticlePage({
             <p className="text-lg text-gray-600 mt-4">{article.excerpt}</p>
           </header>
 
-          <div className="space-y-4 text-gray-700 leading-relaxed">
-            {article.paragraphs.map((b, i) =>
-              b.isHeading ? (
-                <h2 key={i} className="text-xl font-bold text-gray-900 mt-8 mb-2">
-                  {b.text}
-                </h2>
-              ) : (
-                <p key={i}>{b.text}</p>
-              ),
-            )}
+          {/* Обкладинка */}
+          <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden mb-10 bg-green-50">
+            <Image
+              src={article.coverImage?.url ?? `/blog/${article.slug}.jpg`}
+              alt={article.coverImage?.alt ?? article.title}
+              fill
+              sizes="(max-width: 768px) 100vw, 768px"
+              className="object-cover"
+              priority
+            />
+          </div>
+
+          <div className="space-y-5 text-[17px] text-gray-700 leading-[1.8]">
+            {renderBlocks(article.paragraphs)}
           </div>
 
           {/* Відео YouTube / TikTok */}

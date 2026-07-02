@@ -2,10 +2,12 @@
 
 # Rodonit Agro — rodonit-new
 
-## Стан на 02.07.2026
-- ✅ Схема Neon мігрована через raw SQL (POST /rodonit-debug) — 66/66 таблиць
-- ✅ Seed частково: settings + 6 продуктів + 4 дистриб'ютори в БД
-- 🔄 Articles (7 шт) — треба створити articles_embeds + _articles_v_version_embeds, потім seed
+## Стан на 02.07.2026 — ✅ ВСЕ ГОТОВО
+- ✅ Схема Neon мігрована (raw SQL) — всі таблиці
+- ✅ Seed повний: settings + 6 продуктів + 4 дистриб'ютори + 7 статей
+- ✅ Всі сторінки 200 і тягнуть дані з Payload: /, /preparaty, /distributors, /contacts, /blog
+- ✅ Перший адмін: reklama@rodonit.com.ua (пароль тимчасовий, Олег міняє в профілі /admin → Account)
+- ✅ /rodonit-debug + /rodonit-seed ВИДАЛЕНО (commit 61b0d40) — безпека
 - ✅ SMTP env vars на Vercel (mail.adm.tools:465, reklama@rodonit.com.ua)
 
 ## КЛЮЧОВІ УРОКИ (типи id в Payload 3.x Postgres)
@@ -18,12 +20,9 @@
 - exec() в endpoint: drizzle.execute першим (стабільний), НЕ викликати db.destroy() (закриває pool на warm lambda!)
 - /rodonit-debug POST з body {sql:[...]} = raw SQL mode (фікси без деплою)
 
-## Наступний крок (після деплою 47991fb)
-1. Raw SQL: CREATE articles_embeds + _articles_v_version_embeds
-2. POST /rodonit-seed → 7 статей
-3. /admin → create-first-user (email Олега + пароль)
-4. Видалити /rodonit-debug і /rodonit-seed, задеплоїти
-5. Перевірити всі сторінки: /, /preparaty, /distributors, /contacts, /blog
+## Наступний крок
+- Немає критичних. Опційно: EN-локалізація контенту (Олег заповнює в адмінці), перевірка контакт-форми (реальний тест листа на reklama@).
+- Якщо треба знову мігрувати схему — endpoints видалені; підняти тимчасово з git history (commit 47991fb) або через Payload push локально.
 
 ## Технічні деталі
 - Repo: Lilly0990/rodonit-new → rodonit-new.vercel.app

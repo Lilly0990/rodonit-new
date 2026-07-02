@@ -64,13 +64,6 @@ export default function AboutPage() {
             ))}
           </div>
 
-          <h2 className="text-xl font-bold text-gray-900 mt-10 mb-3">Технологія «Три-Е»</h2>
-          <p className="text-gray-700 mb-6">
-            Власна запатентована технологія «Три-Е» — <strong>Екологічно. Економічно. Ефективно.</strong> Це
-            підхід, що дозволяє вирощувати екологічно чисту продукцію, відновлювати родючість ґрунту й
-            захищати майбутній урожай від хімічних і токсичних стресів — за оптимальних витрат.
-          </p>
-
           <div className="mt-10 flex flex-wrap gap-3">
             <Link href="/preparaty" className="bg-green-700 text-white font-medium px-6 py-3 rounded hover:bg-green-800 transition-colors">
               Переглянути препарати

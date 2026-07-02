@@ -72,8 +72,44 @@ export default async function ProductPage({
     rate: row.rate,
   }))
 
+  const SITE = process.env.NEXT_PUBLIC_SERVER_URL || 'https://rodonit-new.vercel.app'
+  const productUrl = `${SITE}/preparaty/${product.slug}`
+  const absImg = imgSrc.startsWith('http') ? imgSrc : `${SITE}${imgSrc}`
+
+  const productSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: product.name,
+    description: product.shortDescription || product.about || product.name,
+    image: absImg,
+    category: categoryName,
+    url: productUrl,
+    brand: { '@type': 'Brand', name: 'Rodonit Agro' },
+    manufacturer: { '@type': 'Organization', name: 'ТОВ «Родоніт Агро»' },
+    ...(product.activeIngredient
+      ? {
+          additionalProperty: [
+            { '@type': 'PropertyValue', name: 'Діюча речовина', value: product.activeIngredient },
+            ...(product.form ? [{ '@type': 'PropertyValue', name: 'Форма випуску', value: product.form }] : []),
+          ],
+        }
+      : {}),
+  }
+
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Головна', item: SITE },
+      { '@type': 'ListItem', position: 2, name: 'Препарати', item: `${SITE}/preparaty` },
+      { '@type': 'ListItem', position: 3, name: product.name, item: productUrl },
+    ],
+  }
+
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       <Header />
       <main className="flex-1">
         {/* Хлібні крихти */}

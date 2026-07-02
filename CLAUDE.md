@@ -13,6 +13,11 @@
   rich-структура статей (заголовки h2 + списки), cover-hero + типографіка.
 - ✅ Блок «Три-Е» / 3E ВИДАЛЕНО з головної + /about (commit 4d90e23). Олег у Fathom-розмові
   прямо: «воно нахуй не нужно» — це стара ідея суббренду, неактуальна після Covid/війни.
+- ✅ SEO-пакет (02.07): sitemap.xml (20 URL, динамічний), robots.txt (СТАТИЧНИЙ public/robots.txt —
+  динамічний robots.ts НЕ генерувався у Next16+route-groups!), Organization+LocalBusiness schema
+  (OrganizationSchema.tsx у layout, тягне settings), Product+Breadcrumb schema на препаратах,
+  OG-зображення (public/og-image.jpg), оновлені title/description/keywords, адреса в topbar.
+- ✅ Обкладинки новин на головній (page.tsx) + на /blog — fallback /blog/{slug}.jpg.
 
 ## Звірка з розмовою Олега (Fathom/NotebookLM d5a3d705, перевірено 02.07)
 - МОВИ: українська + англійська (обидві потрібні). Олег: «двома мовами, тільки дві, українська,

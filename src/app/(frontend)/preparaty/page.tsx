@@ -10,14 +10,16 @@ export const dynamic = 'force-dynamic'
 export const metadata: Metadata = {
   title: 'Препарати для захисту і стимуляції рослин',
   description:
-    "Лінійка препаратів Rodonit за категоріями: стимулятори росту, мікродобрива, фунгіциди, ад'юванти.",
+    "Лінійка препаратів Rodonit за категоріями: стимулятори росту, мікродобрива, фунгіциди, прилипачі.",
 }
 
 const CATEGORIES: CategoryUi[] = [
   { slug: 'stymulyatory', name: 'Стимулятори росту' },
   { slug: 'mikrodobryva', name: 'Мікродобрива' },
   { slug: 'fungitsydy', name: 'Фунгіциди' },
-  { slug: 'adyuvanty', name: "Ад'юванти" },
+  { slug: 'adyuvanty', name: 'Прилипачі' },
+  // Зарезервована категорія — таб зʼявиться автоматично, коли Олег додасть перший продукт «Біопродукти»
+  { slug: 'bioprodukty', name: 'Біопродукти' },
 ]
 
 export default async function PreparatyPage({

@@ -61,7 +61,7 @@ export interface CmsProduct {
   id: string | number
   slug: string
   name: string
-  category: 'stymulyatory' | 'mikrodobryva' | 'fungitsydy' | 'adyuvanty'
+  category: 'stymulyatory' | 'mikrodobryva' | 'fungitsydy' | 'adyuvanty' | 'bioprodukty'
   mainImage?: { url?: string; alt?: string } | null
   shortDescription?: string | null
   subtitle?: string | null

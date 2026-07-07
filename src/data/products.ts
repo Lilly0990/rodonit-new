@@ -6,6 +6,7 @@ export type CategorySlug =
   | 'mikrodobryva'
   | 'fungitsydy'
   | 'adyuvanty'
+  | 'bioprodukty'
 
 export interface Category {
   slug: CategorySlug
@@ -57,8 +58,8 @@ export const categories: Category[] = [
   },
   {
     slug: 'adyuvanty',
-    name: 'Ад’юванти',
-    description: 'Прилипачі, що покращують утримання робочих розчинів на рослині.',
+    name: 'Прилипачі',
+    description: 'Покращують утримання й дію робочих розчинів на рослині.',
     image: '/products/hydrolip.png',
   },
 ]

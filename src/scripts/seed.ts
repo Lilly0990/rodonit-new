@@ -106,7 +106,7 @@ async function seed() {
       data: {
         slug: p.slug,
         name: p.name,
-        category: p.category as 'stymulyatory' | 'mikrodobryva' | 'fungitsydy' | 'adyuvanty',
+        category: p.category as 'stymulyatory' | 'mikrodobryva' | 'fungitsydy' | 'adyuvanty' | 'bioprodukty',
         shortDescription: p.shortDescription ?? '',
         subtitle: c.subtitle ?? '',
         about: p.about ?? c.about ?? '',

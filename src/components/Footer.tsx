@@ -98,6 +98,26 @@ export default async function Footer() {
                 Telegram
               </a>
             )}
+            {settings.youtube && (
+              <a
+                href={settings.youtube}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm hover:text-white transition-colors"
+              >
+                YouTube
+              </a>
+            )}
+            {settings.tiktok && (
+              <a
+                href={settings.tiktok}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm hover:text-white transition-colors"
+              >
+                TikTok
+              </a>
+            )}
           </div>
         </div>
       </div>

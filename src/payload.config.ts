@@ -82,7 +82,8 @@ export default buildConfig({
             { label: 'Стимулятори росту', value: 'stymulyatory' },
             { label: 'Мікродобрива', value: 'mikrodobryva' },
             { label: 'Фунгіциди', value: 'fungitsydy' },
-            { label: "Ад'юванти", value: 'adyuvanty' },
+            { label: 'Прилипачі', value: 'adyuvanty' },
+            { label: 'Біопродукти', value: 'bioprodukty' },
           ],
         },
         {

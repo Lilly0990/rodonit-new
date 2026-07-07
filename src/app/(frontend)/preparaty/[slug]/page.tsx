@@ -14,7 +14,8 @@ const CATEGORY_NAMES: Record<string, string> = {
   stymulyatory: 'Стимулятори росту',
   mikrodobryva: 'Мікродобрива',
   fungitsydy: 'Фунгіциди',
-  adyuvanty: "Ад'юванти",
+  adyuvanty: 'Прилипачі',
+  bioprodukty: 'Біопродукти',
 }
 
 export async function generateMetadata({

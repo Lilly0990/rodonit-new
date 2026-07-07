@@ -8,7 +8,7 @@ export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
   title: 'Контакти',
-  description: "Зв'яжіться з нами: телефон, email, адреса. Консультація агронома.",
+  description: "Зв'яжіться з нами: телефон, email, адреса. Консультація спеціаліста з підбору препаратів.",
 }
 
 export default async function ContactsPage() {

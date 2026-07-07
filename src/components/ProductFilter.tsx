@@ -21,7 +21,10 @@ export default function ProductFilter({
 }) {
   const [active, setActive] = useState<string>(initialCat)
 
-  const tabs = [{ slug: 'all', name: 'Усі препарати' }, ...categories]
+  // Показуємо таб лише якщо в категорії є хоча б один продукт
+  // (зарезервовані категорії без товарів, напр. «Біопродукти», не відображаються)
+  const nonEmpty = categories.filter((c) => products.some((p) => p.category === c.slug))
+  const tabs = [{ slug: 'all', name: 'Усі препарати' }, ...nonEmpty]
   const visible = active === 'all' ? products : products.filter((p) => p.category === active)
 
   return (

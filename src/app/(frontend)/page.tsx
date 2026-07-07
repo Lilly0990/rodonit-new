@@ -13,14 +13,14 @@ export const dynamic = 'force-dynamic'
 export const metadata: Metadata = {
   title: 'Rodonit Agro — Препарати для захисту та стимуляції рослин',
   description:
-    "Препарати для агробізнесу України: стимулятори росту, мікродобрива, фунгіциди, ад'юванти. Сільвер Мікс, Міра РК, Верно, Гідролип та інші.",
+    "Препарати для агробізнесу України: стимулятори росту, мікродобрива, фунгіциди, прилипачі. Сільвер Мікс, Міра РК, Верно, Гідролип та інші.",
 }
 
 const CATEGORIES = [
   { slug: 'stymulyatory' as CategorySlug, name: 'Стимулятори росту', description: 'Активують природні процеси рослини: проростання, кореневу систему, імунітет.' },
   { slug: 'mikrodobryva' as CategorySlug, name: 'Мікродобрива', description: 'Корекція дефіциту кальцію, бору, міді, цинку та гумінових речовин.' },
   { slug: 'fungitsydy' as CategorySlug, name: 'Фунгіциди', description: 'Мідьвмісний захист рослин від грибкових і бактеріальних хвороб.' },
-  { slug: 'adyuvanty' as CategorySlug, name: "Ад'юванти", description: 'Прилипачі, що покращують утримання робочих розчинів на рослині.' },
+  { slug: 'adyuvanty' as CategorySlug, name: 'Прилипачі', description: 'Покращують утримання й дію робочих розчинів на рослині.' },
 ]
 
 export default async function HomePage() {
@@ -188,13 +188,13 @@ export default async function HomePage() {
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-2xl font-bold mb-4">Маєте питання щодо препаратів?</h2>
             <p className="text-green-100/80 mb-6">
-              Наші агрономи допоможуть обрати правильний препарат для вашої культури
+              Наші консультанти допоможуть обрати правильний препарат для вашої культури
             </p>
             <Link
               href="/contacts"
               className="bg-white text-green-900 font-semibold px-8 py-3 rounded hover:bg-green-50 transition-colors"
             >
-              Зв'язатись з агрономом
+              Зв'язатися з консультантом
             </Link>
           </div>
         </section>

@@ -16,30 +16,23 @@ export default async function Header() {
 
   return (
     <header className="bg-white border-b border-gray-200 sticky top-0 z-40">
-      {/* Топ-бар: контакти зліва, адреса справа */}
+      {/* Топ-бар: тільки контакти (телефон + email) */}
       {firstPhone && (
         <div className="bg-green-900 text-white text-xs hidden lg:block">
-          <div className="max-w-6xl mx-auto px-4 py-1.5 flex items-center justify-between">
-            <div className="flex items-center gap-4">
+          <div className="max-w-6xl mx-auto px-4 py-1.5 flex items-center gap-4">
+            <a
+              href={`tel:${firstPhone.replace(/[^\d+]/g, '')}`}
+              className="hover:text-green-200 transition-colors inline-flex items-center gap-1.5"
+            >
+              <span aria-hidden>📞</span>{firstPhone}
+            </a>
+            {settings.email && (
               <a
-                href={`tel:${firstPhone.replace(/[^\d+]/g, '')}`}
+                href={`mailto:${settings.email}`}
                 className="hover:text-green-200 transition-colors inline-flex items-center gap-1.5"
               >
-                <span aria-hidden>📞</span>{firstPhone}
+                <span aria-hidden>✉</span>{settings.email}
               </a>
-              {settings.email && (
-                <a
-                  href={`mailto:${settings.email}`}
-                  className="hover:text-green-200 transition-colors inline-flex items-center gap-1.5"
-                >
-                  <span aria-hidden>✉</span>{settings.email}
-                </a>
-              )}
-            </div>
-            {settings.address && (
-              <span className="text-green-100/80 inline-flex items-center gap-1.5">
-                <span aria-hidden>📍</span>{settings.address}
-              </span>
             )}
           </div>
         </div>

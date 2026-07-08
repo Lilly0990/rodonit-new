@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import ProductDetails from '@/components/ProductDetails'
+import OrderButton from '@/components/OrderButton'
 import type { ContentSection } from '@/components/ProductDetails'
 import { getProductBySlug } from '@/lib/cms'
 
@@ -180,12 +181,10 @@ export default async function ProductPage({
               )}
 
               <div className="mt-8 flex flex-wrap gap-3">
-                <Link
-                  href="/contacts"
-                  className="bg-green-700 text-white font-medium px-6 py-3 rounded hover:bg-green-800 transition-colors"
-                >
-                  Замовити консультацію
-                </Link>
+                <OrderButton
+                  label="Замовити консультацію"
+                  className="bg-green-700 text-white font-medium px-6 py-3 rounded hover:bg-green-800 transition-colors cursor-pointer"
+                />
                 <Link
                   href="/preparaty"
                   className="border border-gray-300 text-gray-700 px-6 py-3 rounded hover:border-green-400 transition-colors"

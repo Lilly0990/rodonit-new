@@ -17,11 +17,18 @@ export default function OrderButton({
   const [open, setOpen] = useState(false)
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
+  const [touched, setTouched] = useState(false)
   const [status, setStatus] = useState<'idle' | 'sending' | 'ok' | 'error'>('idle')
+
+  const phoneDigits = phone.replace(/\D/g, '')
+  const phoneValid = phoneDigits.length >= 10 && phoneDigits.length <= 13
+  const nameValid = name.trim().length >= 2
+  const formValid = nameValid && phoneValid
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!name.trim() || !phone.trim()) return
+    setTouched(true)
+    if (!formValid) return
     setStatus('sending')
     try {
       const res = await fetch('/form-submit', {
@@ -45,6 +52,7 @@ export default function OrderButton({
       setStatus('idle')
       setName('')
       setPhone('')
+      setTouched(false)
     }, 200)
   }
 
@@ -90,23 +98,41 @@ export default function OrderButton({
                 <p className="text-gray-500 text-sm mb-5">
                   Залиште ім'я та телефон — наш консультант передзвонить вам.
                 </p>
-                <form onSubmit={submit} className="space-y-4">
-                  <input
-                    type="text"
-                    placeholder="Ваше ім'я"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    required
-                    className="w-full border border-gray-300 rounded px-4 py-2.5 focus:outline-none focus:border-green-500"
-                  />
-                  <input
-                    type="tel"
-                    placeholder="Номер телефону"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    required
-                    className="w-full border border-gray-300 rounded px-4 py-2.5 focus:outline-none focus:border-green-500"
-                  />
+                <form onSubmit={submit} className="space-y-4" noValidate>
+                  <div>
+                    <label htmlFor="ob-name" className="block text-sm font-medium text-gray-700 mb-1">
+                      Ім'я
+                    </label>
+                    <input
+                      id="ob-name"
+                      type="text"
+                      placeholder="Напр. Олег"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      className={`w-full bg-white text-gray-900 placeholder-gray-400 border rounded px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-green-500/40 ${
+                        touched && !nameValid ? 'border-red-400' : 'border-gray-300 focus:border-green-500'
+                      }`}
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="ob-phone" className="block text-sm font-medium text-gray-700 mb-1">
+                      Телефон
+                    </label>
+                    <input
+                      id="ob-phone"
+                      type="tel"
+                      inputMode="tel"
+                      placeholder="+380 XX XXX XX XX"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      className={`w-full bg-white text-gray-900 placeholder-gray-400 border rounded px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-green-500/40 ${
+                        touched && !phoneValid ? 'border-red-400' : 'border-gray-300 focus:border-green-500'
+                      }`}
+                    />
+                    {touched && !phoneValid && (
+                      <p className="text-red-600 text-xs mt-1">Введіть коректний номер (не менше 10 цифр).</p>
+                    )}
+                  </div>
                   {status === 'error' && (
                     <p className="text-red-600 text-sm">Не вдалося надіслати. Спробуйте ще раз.</p>
                   )}

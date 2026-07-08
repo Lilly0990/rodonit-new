@@ -54,22 +54,13 @@ export default function ApplicationsInteractive({ rows }: { rows: ApplicationRow
 
       {/* Регламент для обраної культури */}
       <div className="bg-green-50/60 border border-green-100 rounded-lg p-5">
-        <h3 className="font-semibold text-gray-900 mb-4">{active}</h3>
-        <div className="space-y-3">
+        <h3 className="font-semibold text-gray-900 mb-3">{active}</h3>
+        <div className="space-y-2">
           {(byCulture[active] ?? []).map((r, i) => (
-            <div
-              key={i}
-              className="grid grid-cols-1 sm:grid-cols-2 gap-1 sm:gap-6 pb-3 border-b border-green-100 last:border-0 last:pb-0"
-            >
-              <div className="text-sm text-gray-600">
-                <span className="text-gray-400">Фаза розвитку: </span>
-                {r.phase}
-              </div>
-              <div className="text-sm font-medium text-green-800">
-                <span className="text-gray-400 font-normal">Норма: </span>
-                {r.rate}
-              </div>
-            </div>
+            <p key={i} className="text-sm text-gray-700 leading-relaxed">
+              <span className="text-gray-400">Регламент застосування: </span>
+              {r.rate}
+            </p>
           ))}
         </div>
       </div>

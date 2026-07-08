@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { getSettings } from '@/lib/cms'
+import OrderButton from '@/components/OrderButton'
 
 const navLinks = [
   { label: 'Препарати', href: '/preparaty' },
@@ -61,17 +62,13 @@ export default async function Header() {
           ))}
         </nav>
 
-        <Link
-          href="/contacts"
-          className="hidden lg:block bg-green-700 text-white text-sm px-4 py-2 rounded hover:bg-green-600 transition-colors"
-        >
-          Замовити консультацію
-        </Link>
+        <OrderButton
+          label="Замовити консультацію"
+          className="hidden lg:block bg-green-700 text-white text-sm px-4 py-2 rounded hover:bg-green-600 transition-colors cursor-pointer"
+        />
 
-        {/* Мобільне меню — посилання */}
-        <Link href="/contacts" className="lg:hidden text-green-700 text-sm font-medium">
-          Зв'язатись
-        </Link>
+        {/* Мобільне меню */}
+        <OrderButton label="Зв'язатись" className="lg:hidden text-green-700 text-sm font-medium cursor-pointer" />
       </div>
     </header>
   )

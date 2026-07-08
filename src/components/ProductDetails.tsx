@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import type { ApplicationRow } from '@/data/products'
+import ApplicationsInteractive from '@/components/ApplicationsInteractive'
 
 export interface ContentSection {
   heading: string
@@ -138,28 +139,7 @@ export default function ProductDetails({
   if (applications?.length) {
     items.push({
       title: 'Регламент застосування',
-      render: () => (
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm border-collapse">
-            <thead>
-              <tr className="bg-green-50 text-left">
-                <th className="border border-gray-200 px-3 py-2 font-medium text-gray-700">Культура</th>
-                <th className="border border-gray-200 px-3 py-2 font-medium text-gray-700">Фаза розвитку</th>
-                <th className="border border-gray-200 px-3 py-2 font-medium text-gray-700 whitespace-nowrap">Норма</th>
-              </tr>
-            </thead>
-            <tbody>
-              {applications.map((row, i) => (
-                <tr key={i} className="align-top">
-                  <td className="border border-gray-200 px-3 py-2 font-medium text-gray-800">{row.culture}</td>
-                  <td className="border border-gray-200 px-3 py-2 text-gray-600">{row.phase}</td>
-                  <td className="border border-gray-200 px-3 py-2 text-gray-800 whitespace-nowrap">{row.rate}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      ),
+      render: () => <ApplicationsInteractive rows={applications} />,
     })
   }
 

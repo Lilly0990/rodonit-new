@@ -4,8 +4,9 @@ import Image from 'next/image'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import CategoryIcon from '@/components/CategoryIcon'
+import OrderButton from '@/components/OrderButton'
 import type { CategorySlug } from '@/data/products'
-import { getAllProducts, getAllArticles } from '@/lib/cms'
+import { getAllProducts, getAllArticles, getSettings, DEFAULT_STATS } from '@/lib/cms'
 import { productsCount } from '@/lib/plural'
 
 export const dynamic = 'force-dynamic'
@@ -24,16 +25,21 @@ const CATEGORIES = [
 ]
 
 export default async function HomePage() {
-  const [products, latestArticles] = await Promise.all([
+  const [products, latestArticles, settings] = await Promise.all([
     getAllProducts(),
     getAllArticles().then((a) => a.slice(0, 3)),
+    getSettings(),
   ])
 
-  const stats = [
-    { value: '20+', label: 'років на ринку' },
-    { value: String(products.length), label: 'препаратів у каталозі' },
-    { value: '100+', label: 'дослідів щороку' },
-  ]
+  // Статистика: керована з адмінки (settings.statistics), інакше — дефолт із авто-лічильником препаратів
+  const stats =
+    settings.statistics && settings.statistics.length > 0
+      ? settings.statistics
+      : [
+          DEFAULT_STATS[0],
+          { value: String(products.length), label: 'препаратів у каталозі' },
+          DEFAULT_STATS[1],
+        ]
 
   return (
     <>
@@ -190,12 +196,10 @@ export default async function HomePage() {
             <p className="text-green-100/80 mb-6">
               Наші консультанти допоможуть обрати правильний препарат для вашої культури
             </p>
-            <Link
-              href="/contacts"
-              className="bg-white text-green-900 font-semibold px-8 py-3 rounded hover:bg-green-50 transition-colors"
-            >
-              Зв'язатися з консультантом
-            </Link>
+            <OrderButton
+              label="Зв'язатися з консультантом"
+              className="bg-white text-green-900 font-semibold px-8 py-3 rounded hover:bg-green-50 transition-colors cursor-pointer"
+            />
           </div>
         </section>
       </main>

@@ -3,16 +3,26 @@ import Link from 'next/link'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import { products } from '@/data/products'
+import { getSettings, DEFAULT_STATS } from '@/lib/cms'
 
 export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
   title: 'Про компанію',
   description:
-    'ТОВ «Родоніт Агро» — понад 20 років на аграрному ринку України. Унікальні препарати, власні дослідження, технологія «Три-Е».',
+    'ТОВ «Родоніт Агро» — понад 20 років на аграрному ринку України. Унікальні препарати для захисту й живлення рослин, власні дослідження.',
 }
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const settings = await getSettings()
+  const stats =
+    settings.statistics && settings.statistics.length > 0
+      ? settings.statistics
+      : [
+          DEFAULT_STATS[0],
+          { value: String(products.length), label: 'препаратів у каталозі' },
+          DEFAULT_STATS[1],
+        ]
   return (
     <>
       <Header />
@@ -52,11 +62,7 @@ export default function AboutPage() {
 
           {/* Статистика */}
           <div className="grid grid-cols-3 gap-4 my-10">
-            {[
-              { value: '20+', label: 'років на ринку' },
-              { value: String(products.length), label: 'препаратів у каталозі' },
-              { value: '100+', label: 'дослідів щороку' },
-            ].map((s) => (
+            {stats.map((s) => (
               <div key={s.label} className="bg-[var(--green-soft)] rounded-lg p-6 text-center">
                 <div className="text-2xl font-bold text-green-800">{s.value}</div>
                 <div className="text-xs text-gray-600 mt-1">{s.label}</div>

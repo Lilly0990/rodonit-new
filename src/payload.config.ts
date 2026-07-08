@@ -520,6 +520,19 @@ export default buildConfig({
           label: "Telegram Chat ID для сповіщень (необов'язково)",
           admin: { description: 'Якщо заповнено — заявки дублюються в Telegram' },
         },
+        // ── Статистика «Про компанію» (редагується вручну) ─────────────────
+        {
+          name: 'statistics',
+          type: 'array',
+          label: 'Статистика (блок «Про компанію»)',
+          admin: {
+            description: 'Показники на головній і сторінці «Про компанію». Порядок = порядок відображення.',
+          },
+          fields: [
+            { name: 'value', type: 'text', label: 'Значення (напр. 20+)', required: true },
+            { name: 'label', type: 'text', label: 'Підпис (напр. років на ринку)', required: true },
+          ],
+        },
         // ── SEO за замовчуванням ───────────────────────────────────────────
         {
           name: 'seoDefault',

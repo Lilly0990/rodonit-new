@@ -167,11 +167,18 @@ export interface CmsSiteSettings {
   tiktok?: string | null
   contactFormEmail?: string | null
   contactFormTelegramChatId?: string | null
+  statistics?: { value: string; label: string }[]
   seoDefault?: { title?: string | null; description?: string | null }
 }
 
+// Дефолтна статистика, якщо в CMS ще не заповнено
+export const DEFAULT_STATS = [
+  { value: '20+', label: 'років на ринку' },
+  { value: '100+', label: 'дослідів щороку' },
+]
+
 export async function getSettings(): Promise<CmsSiteSettings> {
   const payload = await payloadClient()
-  const data = await payload.findGlobal({ slug: 'settings', depth: 0 })
+  const data = await payload.findGlobal({ slug: 'settings', depth: 1 })
   return data as unknown as CmsSiteSettings
 }

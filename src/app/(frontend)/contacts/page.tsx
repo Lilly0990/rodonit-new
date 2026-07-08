@@ -81,42 +81,38 @@ export default async function ContactsPage() {
                   </div>
                 )}
 
-                {(settings.facebook || settings.instagram || settings.telegram) && (
+                {(settings.facebook || settings.instagram || settings.telegram || settings.youtube || settings.tiktok) && (
                   <div>
                     <p className="font-medium text-gray-800 mb-1">Соціальні мережі</p>
                     <div className="flex gap-4 mt-1 flex-wrap">
                       {settings.facebook && (
-                        <a
-                          href={settings.facebook}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-green-700 hover:underline"
-                        >
+                        <a href={settings.facebook} target="_blank" rel="noopener noreferrer" className="text-green-700 hover:underline">
                           Facebook
                         </a>
                       )}
                       {settings.instagram && (
-                        <a
-                          href={settings.instagram}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-green-700 hover:underline"
-                        >
+                        <a href={settings.instagram} target="_blank" rel="noopener noreferrer" className="text-green-700 hover:underline">
                           Instagram
                         </a>
                       )}
                       {settings.telegram && (
                         <a
-                          href={
-                            settings.telegram.startsWith('@')
-                              ? `https://t.me/${settings.telegram.slice(1)}`
-                              : settings.telegram
-                          }
+                          href={settings.telegram.startsWith('@') ? `https://t.me/${settings.telegram.slice(1)}` : settings.telegram}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-green-700 hover:underline"
                         >
                           Telegram
+                        </a>
+                      )}
+                      {settings.youtube && (
+                        <a href={settings.youtube} target="_blank" rel="noopener noreferrer" className="text-green-700 hover:underline">
+                          YouTube
+                        </a>
+                      )}
+                      {settings.tiktok && (
+                        <a href={settings.tiktok} target="_blank" rel="noopener noreferrer" className="text-green-700 hover:underline">
+                          TikTok
                         </a>
                       )}
                     </div>

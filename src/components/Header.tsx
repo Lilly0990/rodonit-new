@@ -17,24 +17,40 @@ export default async function Header() {
 
   return (
     <header className="bg-white border-b border-gray-200 sticky top-0 z-40">
-      {/* Топ-бар: тільки контакти (телефон + email) */}
+      {/* Топ-бар: контакти зліва, соцмережі справа */}
       {firstPhone && (
         <div className="bg-green-900 text-white text-xs hidden lg:block">
-          <div className="max-w-6xl mx-auto px-4 py-1.5 flex items-center gap-4">
-            <a
-              href={`tel:${firstPhone.replace(/[^\d+]/g, '')}`}
-              className="hover:text-green-200 transition-colors inline-flex items-center gap-1.5"
-            >
-              <span aria-hidden>📞</span>{firstPhone}
-            </a>
-            {settings.email && (
+          <div className="max-w-6xl mx-auto px-4 py-1.5 flex items-center justify-between">
+            <div className="flex items-center gap-4">
               <a
-                href={`mailto:${settings.email}`}
+                href={`tel:${firstPhone.replace(/[^\d+]/g, '')}`}
                 className="hover:text-green-200 transition-colors inline-flex items-center gap-1.5"
               >
-                <span aria-hidden>✉</span>{settings.email}
+                <span aria-hidden>📞</span>{firstPhone}
               </a>
-            )}
+              {settings.email && (
+                <a
+                  href={`mailto:${settings.email}`}
+                  className="hover:text-green-200 transition-colors inline-flex items-center gap-1.5"
+                >
+                  <span aria-hidden>✉</span>{settings.email}
+                </a>
+              )}
+            </div>
+            <div className="flex items-center gap-3">
+              {settings.facebook && (
+                <a href={settings.facebook} target="_blank" rel="noopener noreferrer" className="hover:text-green-200 transition-colors">Facebook</a>
+              )}
+              {settings.instagram && (
+                <a href={settings.instagram} target="_blank" rel="noopener noreferrer" className="hover:text-green-200 transition-colors">Instagram</a>
+              )}
+              {settings.youtube && (
+                <a href={settings.youtube} target="_blank" rel="noopener noreferrer" className="hover:text-green-200 transition-colors">YouTube</a>
+              )}
+              {settings.tiktok && (
+                <a href={settings.tiktok} target="_blank" rel="noopener noreferrer" className="hover:text-green-200 transition-colors">TikTok</a>
+              )}
+            </div>
           </div>
         </div>
       )}

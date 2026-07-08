@@ -72,6 +72,18 @@
 - **Blob** (media→Vercel Blob) — потребує BLOB_READ_WRITE_TOKEN (крок Бро в дашборді).
   Разом з Blob: авто-уніфікація фото при завантаженні (sharp.trim()+resize у Payload upload hook).
 
+## Довиправлення 08.07 (вечір)
+- ✅ Фото Гідролип: rembg зʼїдав білу каністру → flood-fill метод (scratchpad, врахувати для Blob-хука).
+- ✅ Прибрано колонку «Фаза розвитку» (сміття: назва групи культур). Фаза внесення вже в тексті rate.
+- ✅ Заповнено ВСІ характеристики продуктів з PDF Олога (форма/термін/діюча речовина/призначення).
+  Оновлено через raw SQL UPDATE products_locales (PATCH products падав — версійність/drafts баг).
+  Джерело: PDF у `Rodonit\контент\ChatExport_2026-06-30\files\_extracted\для сайту\`. Silver Mix — з фото каністри.
+- ✅ Соцмережі: YouTube+TikTok у Контактах + усі соцмережі в хедер-topbar (справа).
+- ✅ К-сть обробок у регламенті: Verno FG (1-4/1-2 по культурах), Міра (1-6 за вегетацію) — з PDF.
+  Nordox — PDF 2-колонковий, к-сть нечітка; Гідролип — у PDF немає к-сті обробок.
+- ⚠️ УВАГА: applications/specs оновлені ТІЛЬКИ в БД (raw SQL), НЕ в products.ts. При re-seed зникнуть!
+  products.ts застарілий для цих полів — БД є джерелом істини. НЕ робити re-seed products без оновлення products.ts.
+
 ## Блог — як оновлювати
 - Cover: статичний `public/blog/{slug}.jpg` (fallback у рендері; media/Blob НЕ налаштовано).
 - Контент статей (paragraphs) у Neon — оновлювати через Payload REST API PATCH з JWT-токеном

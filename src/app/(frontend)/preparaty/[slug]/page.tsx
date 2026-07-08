@@ -6,6 +6,7 @@ import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import ProductDetails from '@/components/ProductDetails'
 import OrderButton from '@/components/OrderButton'
+import ApplicationsInteractive from '@/components/ApplicationsInteractive'
 import type { ContentSection } from '@/components/ProductDetails'
 import { getProductBySlug } from '@/lib/cms'
 
@@ -195,21 +196,28 @@ export default async function ProductPage({
             </div>
           </div>
 
-          {/* Культури застосування */}
-          {(product.cultures ?? []).length > 0 && (
-            <div className="mt-12">
-              <h2 className="text-lg font-bold text-gray-900 mb-3">Застосування на культурах</h2>
-              <div className="flex flex-wrap gap-2">
-                {(product.cultures ?? []).map((cult) => (
-                  <span
-                    key={cult.name}
-                    className="text-sm bg-green-50 text-green-800 px-3 py-1.5 rounded-full"
-                  >
-                    {cult.name}
-                  </span>
-                ))}
-              </div>
+          {/* Застосування на культурах — інтерактивні теги + регламент */}
+          {applications.length > 0 ? (
+            <div className="mt-12 max-w-4xl">
+              <h2 className="text-lg font-bold text-gray-900 mb-4">Застосування на культурах</h2>
+              <ApplicationsInteractive rows={applications} />
             </div>
+          ) : (
+            (product.cultures ?? []).length > 0 && (
+              <div className="mt-12">
+                <h2 className="text-lg font-bold text-gray-900 mb-3">Застосування на культурах</h2>
+                <div className="flex flex-wrap gap-2">
+                  {(product.cultures ?? []).map((cult) => (
+                    <span
+                      key={cult.name}
+                      className="text-sm bg-green-50 text-green-800 px-3 py-1.5 rounded-full"
+                    >
+                      {cult.name}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )
           )}
 
           {/* Детальна інформація — акордеон */}

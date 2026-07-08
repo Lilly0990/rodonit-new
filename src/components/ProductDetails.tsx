@@ -140,20 +140,25 @@ export default function ProductDetails({
       title: 'Регламент застосування',
       render: () => (
         <div className="overflow-x-auto">
-          <table className="w-full text-sm border-collapse">
+          <table className="w-full text-sm border-collapse table-fixed">
+            <colgroup>
+              <col className="w-[22%]" />
+              <col className="w-[26%]" />
+              <col className="w-[52%]" />
+            </colgroup>
             <thead>
               <tr className="bg-green-50 text-left">
                 <th className="border border-gray-200 px-3 py-2 font-medium text-gray-700">Культура</th>
                 <th className="border border-gray-200 px-3 py-2 font-medium text-gray-700">Фаза розвитку</th>
-                <th className="border border-gray-200 px-3 py-2 font-medium text-gray-700 whitespace-nowrap">Норма</th>
+                <th className="border border-gray-200 px-3 py-2 font-medium text-gray-700">Норма</th>
               </tr>
             </thead>
             <tbody>
               {applications.map((row, i) => (
                 <tr key={i} className="align-top">
-                  <td className="border border-gray-200 px-3 py-2 font-medium text-gray-800">{row.culture}</td>
-                  <td className="border border-gray-200 px-3 py-2 text-gray-600">{row.phase}</td>
-                  <td className="border border-gray-200 px-3 py-2 text-gray-800 whitespace-nowrap">{row.rate}</td>
+                  <td className="border border-gray-200 px-3 py-2 font-medium text-gray-800 break-words">{row.culture}</td>
+                  <td className="border border-gray-200 px-3 py-2 text-gray-600 break-words">{row.phase}</td>
+                  <td className="border border-gray-200 px-3 py-2 text-gray-800 break-words">{row.rate}</td>
                 </tr>
               ))}
             </tbody>

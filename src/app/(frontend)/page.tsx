@@ -5,6 +5,7 @@ import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import CategoryIcon from '@/components/CategoryIcon'
 import OrderButton from '@/components/OrderButton'
+import PhasesPortfolio from '@/components/PhasesPortfolio'
 import type { CategorySlug } from '@/data/products'
 import { getAllProducts, getAllArticles, getSettings, DEFAULT_STATS } from '@/lib/cms'
 import { productsCount } from '@/lib/plural'
@@ -105,6 +106,9 @@ export default async function HomePage() {
             </div>
           </div>
         </section>
+
+        {/* Портфель за фазами застосування */}
+        <PhasesPortfolio />
 
         {/* Про компанію */}
         <section className="py-16 px-4 bg-white">

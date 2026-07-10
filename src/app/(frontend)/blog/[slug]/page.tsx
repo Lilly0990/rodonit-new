@@ -7,6 +7,7 @@ import Footer from '@/components/Footer'
 import OrderButton from '@/components/OrderButton'
 import { getArticleBySlug } from '@/lib/cms'
 import VideoEmbed from '@/components/VideoEmbed'
+import { ProductCard, SynergyCards, PhaseTable, type ProductCardData, type SynergyItem, type PhaseRow } from '@/components/ArticleBlocks'
 import { JSX } from 'react'
 
 const SITE = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'
@@ -15,6 +16,36 @@ const TOMATO = '#c63d2f'
 export const dynamic = 'force-dynamic'
 
 type Block = { text: string; isHeading?: boolean | null }
+
+// ─── Дані багатих блоків (вставляються в контент через маркери) ───────
+const PRODUCT_CARDS: Record<string, ProductCardData> = {
+  'verno-cab': {
+    name: 'Верно CaB',
+    badge: 'Органік · ECOCERT',
+    subtitle: 'Комплексне кальцій-борне добриво · водно-дисперговані гранули',
+    stats: [
+      { n: '16', unit: '%', label: 'Кальцій (CaO)' },
+      { n: '9', unit: '%', label: 'Бор (B₂O₃)' },
+      { n: '0', label: 'Азоту', accent: true },
+    ],
+    description:
+      'Добриво без азоту — цілеспрямовано працює на якість і міцність плодів, не провокуючи зайвого росту зеленої маси. Мікронізовані частинки природного мінералу міцно утримуються на листі й поступово вивільняють кальцій і бор, даючи швидкий ефект і пролонговану дію. Виробник прямо позиціонує Верно CaB як засіб, що запобігає сухій вершинній гнилі плодів.',
+  },
+}
+
+const SYNERGY_CAB: SynergyItem[] = [
+  { symbol: 'B', sub: 'Бор', title: 'Провідник кальцію', text: 'Підтримує роботу протонної помпи мембрани й формує боратні містки клітинної стінки — допомагає кальцію потрапити в клітину.' },
+  { symbol: 'Ca', sub: 'Кальцій', title: 'Арматура плоду', text: 'Зв’язується з пектинами клітинних стінок і надає тканині плоду міцності та стійкості до розтріскування.' },
+]
+
+const PHASES_CAB: { head: [string, string, string]; rows: PhaseRow[] } = {
+  head: ['Фаза розвитку', 'Що відбувається', 'Дія'],
+  rows: [
+    { phase: 'Бутонізація', what: 'Закладаються майбутні зав’язі', action: 'Перше підживлення Ca + B' },
+    { phase: 'Цвітіння', what: 'Запліднення, старт формування плоду', action: 'Ключова обробка по листу' },
+    { phase: 'Після формування плодів', what: 'Плід набирає масу і міцність тканини', action: 'Повторне підживлення' },
+  ],
+}
 
 // Розбір блоків у стильні елементи:
 // isHeading → h2; "• " → checkmark-список; "Питання? — Відповідь" → FAQ-акордеон;
@@ -43,6 +74,21 @@ function renderBlocks(blocks: Block[]): JSX.Element[] {
   for (const b of blocks) {
     const text = (b.text ?? '').trim()
     if (!text) continue
+
+    // багатий блок за маркером: [[product:slug]] | [[synergy]] | [[phases]]
+    if (text.startsWith('[[') && text.endsWith(']]')) {
+      flush()
+      const marker = text.slice(2, -2).trim()
+      if (marker.startsWith('product:')) {
+        const card = PRODUCT_CARDS[marker.slice('product:'.length)]
+        if (card) out.push(<ProductCard key={`pc-${out.length}`} data={card} />)
+      } else if (marker === 'synergy') {
+        out.push(<SynergyCards key={`sy-${out.length}`} items={SYNERGY_CAB} />)
+      } else if (marker === 'phases') {
+        out.push(<PhaseTable key={`ph-${out.length}`} rows={PHASES_CAB.rows} head={PHASES_CAB.head} />)
+      }
+      continue
+    }
 
     // список
     if (!b.isHeading && text.startsWith('• ')) {

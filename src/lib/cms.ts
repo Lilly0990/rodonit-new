@@ -173,8 +173,8 @@ export interface CmsSiteSettings {
 
 // Дефолтна статистика, якщо в CMS ще не заповнено
 export const DEFAULT_STATS = [
-  { value: '20+', label: 'років на ринку' },
-  { value: '100+', label: 'дослідів щороку' },
+  { value: '2019', label: 'рік заснування' },
+  { value: 'Щороку', label: 'науково-виробничі досліди' },
 ]
 
 export async function getSettings(): Promise<CmsSiteSettings> {

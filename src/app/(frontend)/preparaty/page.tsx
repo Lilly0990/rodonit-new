@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import ProductFilter from '@/components/ProductFilter'
+import PhasesPortfolio from '@/components/PhasesPortfolio'
 import { getAllProducts } from '@/lib/cms'
 import type { CategoryUi } from '@/components/ProductFilter'
 
@@ -47,6 +48,9 @@ export default async function PreparatyPage({
         <div className="max-w-6xl mx-auto px-4 py-12">
           <ProductFilter categories={CATEGORIES} products={products} initialCat={initialCat} />
         </div>
+
+        {/* Портфель за фазами застосування */}
+        <PhasesPortfolio />
       </main>
       <Footer />
     </>

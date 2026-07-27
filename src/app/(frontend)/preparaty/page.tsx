@@ -42,7 +42,7 @@ export async function generateMetadata({
   // відмінювання («для сої», «для соняшника»), яке важко зробити правильно програмно.
   if (catName && cultureName) {
     return {
-      title: `${catName} — культура «${cultureName}» | Rodonit`,
+      title: `${catName} — культура «${cultureName}»`,
       description: `${catName} Rodonit для культури «${cultureName}»: підбір препаратів, норми внесення, регламент застосування.`,
     }
   }

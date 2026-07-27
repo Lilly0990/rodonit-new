@@ -133,6 +133,35 @@
   (зелена каністра). УВАГА: zerebra-agro.png — це СТАРА упаковка з написом «Зеребра Агро»,
   НЕ використовувати для silver-mix (плутанина брендів, хоч продукт той самий).
 
+## Блог — дизайн-блоки (rich content), редизайн сторінки статті (10.07.2026)
+Перша повноцінна стаття «Вершинна гниль томатів + Верно CaB» (article id=16). Сторінку статті
+`blog/[slug]/page.tsx` ПЕРЕРОБЛЕНО в бренд-стиль (референс — дизайн-артефакт):
+- Зелений hero (green-deep) з рубрикою-бейджем (томатний #c63d2f), заголовком, excerpt, датою; cover заходить на hero; буквиця на 1-му абзаці; checkmark-списки; томатний callout «Важливий нюанс»; FAQ-акордеон (<details>); CTA-блок з OrderButton.
+- **Rich-блоки через маркери** в контенті (paragraphs): `[[product:verno-cab]]`, `[[synergy]]`, `[[phases]]`
+  → рендеряться компонентами з `src/components/ArticleBlocks.tsx` (ProductCard/SynergyCards/PhaseTable).
+  Дані блоків — константи PRODUCT_CARDS/SYNERGY_CAB/PHASES_CAB у самому page.tsx.
+  Щоб додати блок у нову статтю: вставити маркер-рядок у paragraphs + (для product) додати запис у PRODUCT_CARDS.
+- renderBlocks(): маркер `[[...]]`→компонент; "• "→checkmark-список; "Питання? — Відповідь"→FAQ-details; "Важливий нюанс…"→callout; isHeading→h2.
+- Скрипт статті: `src/scripts/add-verno-article.ts` (idempotent update by slug). Запуск проти Neon:
+  `NODE_ENV=production node --env-file=.env.local --import tsx src/scripts/add-verno-article.ts`
+  (POSTGRES_URL — Бро вписав у .env.local вручну, бо на Vercel він Sensitive і pull дає порожнє).
+- ⚠️ УРОК: не рапортувати «готово» по візуалу без скріна живої сторінки (agent-browser). Див. memory [feedback_verify_visual_before_done].
+
+## Фільтр «Підбір по культурах» (27.07.2026)
+- `/preparaty` тепер повністю server-driven: категорія (`?cat=`) і культура (`?culture=`) — реальні query-параметри,
+  фільтровані посиланнями (`<Link>`), не client-side `useState`. Раніше таби категорій були лише в JS-стані —
+  краулер їх не бачив; тепер обидва фільтри — справжні індексовані URL з динамічними title/description (`generateMetadata`).
+- `ProductFilter.tsx` став server component (без 'use client'), приймає вже відфільтрований `products` + повний
+  `allProducts` (тільки щоб визначити які таби показувати).
+- Новий `CultureFilter.tsx` — горизонтальний скрол тегів культур (з `products[].cultures`, реальні дані з БД, 22 унікальні).
+- Новий `src/lib/slug.ts` — `slugifyUk()`, детерміноване UA→latin транслітерування (офіційна таблиця) для URL-слагів
+  культур; працює автоматично для будь-якої нової культури, яку Олег додасть в адмінці (без хардкоду мапи).
+- ⚠️ УРОК: `npm run dev` локально небезпечний — `.env.local` має `POSTGRES_URL` на **прод Neon**, і Payload
+  `push: true` в dev-режимі намагається інтерактивний drizzle push проти неї (завис на "Is enum_products_category
+  enum created or renamed..." — старі приховані колекції cultures/problems/results плутають drizzle). НЕ чекати
+  на цей prompt, одразу вбивати процес. Верифікувати зміни через `git push` на main → Vercel auto-deploy (build
+  = просто `next build`, push:true вимкнено в production) → agent-browser/curl на живий URL.
+
 ## Наступний крок
 - Немає критичних. Опційно: фото у CMS media (зараз static fallback), EN-локалізація, тест контакт-форми.
 - Якщо треба знову мігрувати схему — endpoints видалені; підняти з git history (commit 47991fb).

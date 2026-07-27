@@ -30,28 +30,26 @@ export async function generateMetadata({
   const { cat, culture } = await searchParams
   const catName = CATEGORIES.find((c) => c.slug === cat)?.name
 
-  if (catName && culture) {
-    const products = await getAllProducts()
-    const cultureName = products
-      .flatMap((p) => p.cultures ?? [])
-      .find((c) => slugifyUk(c.name) === culture)?.name
-    if (cultureName) {
-      return {
-        title: `${catName} для ${cultureName.toLowerCase()} — Rodonit`,
-        description: `${catName} Rodonit для культури «${cultureName}»: підбір препаратів, норми внесення, регламент застосування.`,
-      }
-    }
-  }
+  let cultureName: string | undefined
   if (culture) {
     const products = await getAllProducts()
-    const cultureName = products
+    cultureName = products
       .flatMap((p) => p.cultures ?? [])
       .find((c) => slugifyUk(c.name) === culture)?.name
-    if (cultureName) {
-      return {
-        title: `Препарати Rodonit для культури «${cultureName}»`,
-        description: `Підбір препаратів Rodonit (стимулятори, мікродобрива, фунгіциди) для культури «${cultureName}».`,
-      }
+  }
+
+  // Назва культури лишається в називному відмінку в лапках — уникає ручного
+  // відмінювання («для сої», «для соняшника»), яке важко зробити правильно програмно.
+  if (catName && cultureName) {
+    return {
+      title: `${catName} — культура «${cultureName}» | Rodonit`,
+      description: `${catName} Rodonit для культури «${cultureName}»: підбір препаратів, норми внесення, регламент застосування.`,
+    }
+  }
+  if (cultureName) {
+    return {
+      title: `Препарати Rodonit для культури «${cultureName}»`,
+      description: `Підбір препаратів Rodonit (стимулятори, мікродобрива, фунгіциди) для культури «${cultureName}».`,
     }
   }
   if (catName) {

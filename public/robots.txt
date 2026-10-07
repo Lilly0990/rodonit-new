@@ -1,7 +1,6 @@
+# rodonit-new — дубль; основний сайт https://rodonit.com.ua
+# Сторінки НЕ закриті тут навмисно: інакше Google не побачить noindex (meta + X-Robots-Tag).
 User-agent: *
 Allow: /
 Disallow: /admin
 Disallow: /api/
-
-Sitemap: https://rodonit-new.vercel.app/sitemap.xml
-Host: https://rodonit-new.vercel.app

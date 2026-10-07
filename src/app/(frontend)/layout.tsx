@@ -37,10 +37,12 @@ export const metadata: Metadata = {
     description: 'Технології підвищення врожайності: фунгіциди, мікродобрива, стимулятори росту.',
     images: ['/og-image.jpg'],
   },
+  // 07.10.2026: rodonit-new — дубль. Основний сайт rodonit.com.ua працює на редизайні,
+  // тож цей проєкт закрито від індексації (див. також X-Robots-Tag у next.config.ts).
   robots: {
-    index: true,
-    follow: true,
-    googleBot: { index: true, follow: true, 'max-image-preview': 'large', 'max-snippet': -1 },
+    index: false,
+    follow: false,
+    googleBot: { index: false, follow: false },
   },
 }
 

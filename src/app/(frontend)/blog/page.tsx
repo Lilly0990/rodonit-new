@@ -9,6 +9,7 @@ export const metadata: Metadata = {
   title: 'Новини та статті',
   description:
     'Новини компанії Rodonit Agro, статті про препарати, агрономію та результати застосування на культурах.',
+  alternates: { canonical: '/blog' },
 }
 
 export const dynamic = 'force-dynamic'

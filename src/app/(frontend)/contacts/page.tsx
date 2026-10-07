@@ -9,6 +9,7 @@ export const dynamic = 'force-dynamic'
 export const metadata: Metadata = {
   title: 'Контакти',
   description: "Зв'яжіться з нами: телефон, email, адреса. Консультація спеціаліста з підбору препаратів.",
+  alternates: { canonical: '/contacts' },
 }
 
 export default async function ContactsPage() {

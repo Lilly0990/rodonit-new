@@ -7,6 +7,7 @@ export const dynamic = 'force-dynamic'
 export const metadata: Metadata = {
   title: 'Політика конфіденційності',
   description: 'Політика конфіденційності та використання файлів cookie на сайті Rodonit Agro',
+  alternates: { canonical: '/privacy' },
 }
 
 export default function PrivacyPage() {

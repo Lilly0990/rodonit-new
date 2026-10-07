@@ -11,6 +11,7 @@ export const metadata: Metadata = {
   title: 'Про компанію',
   description:
     'ТОВ «Родоніт Агро» (засн. 2019) — аграрний сектор України. Шість препаратів для захисту й живлення рослин, власні науково-виробничі досліди.',
+  alternates: { canonical: '/about' },
 }
 
 export default async function AboutPage() {

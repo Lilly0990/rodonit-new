@@ -20,7 +20,8 @@ export const metadata: Metadata = {
     'стимулятори росту', 'захист рослин', 'Silver Mix', 'Верно', 'Гідролип', 'агрохімія',
   ],
   metadataBase: new URL(SITE),
-  alternates: { canonical: '/' },
+  // canonical тут НЕ ставити: його успадкує кожна сторінка без власного canonical
+  // і вкаже на головну. Кожна сторінка задає свій alternates.canonical.
   openGraph: {
     siteName: 'Rodonit Agro',
     locale: 'uk_UA',

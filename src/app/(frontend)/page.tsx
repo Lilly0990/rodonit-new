@@ -15,6 +15,7 @@ export const metadata: Metadata = {
   title: 'Rodonit Agro — Препарати для захисту та стимуляції рослин',
   description:
     "Препарати для агробізнесу України: стимулятори росту, мікродобрива, фунгіциди, прилипачі. Сільвер Мікс, Міра РК, Верно, Гідролип та інші.",
+  alternates: { canonical: '/' },
 }
 
 const CATEGORIES = [

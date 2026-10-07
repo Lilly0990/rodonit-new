@@ -164,7 +164,8 @@ export async function generateMetadata({
   const { slug } = await params
   const article = await getArticleBySlug(slug)
   if (!article) return { title: 'Статтю не знайдено' }
-  const url = `${SITE}/blog/${article.slug}`
+  // Відносний шлях резолвиться через metadataBase з layout — той самий хост, що й у решти сторінок.
+  const url = `/blog/${article.slug}`
   return {
     title: article.title,
     description: article.excerpt,

@@ -10,6 +10,7 @@ export const dynamic = 'force-dynamic'
 export const metadata: Metadata = {
   title: "Дистриб'ютори",
   description: "Офіційні дистриб'ютори Rodonit Agro по регіонах та напрямках діяльності.",
+  alternates: { canonical: '/distributors' },
 }
 
 const DIRECTIONS: DirectionUi[] = [

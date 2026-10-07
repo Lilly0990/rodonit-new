@@ -38,27 +38,39 @@ export async function generateMetadata({
       .find((c) => slugifyUk(c.name) === culture)?.name
   }
 
+  // Self-canonical: лише розпізнані параметри, у тому ж порядку, що й посилання фільтрів
+  // (cat → culture). Невідомі/сміттєві значення та інші query-параметри → /preparaty.
+  const canonicalParams = new URLSearchParams()
+  if (catName && cat) canonicalParams.set('cat', cat)
+  if (cultureName && culture) canonicalParams.set('culture', culture)
+  const qs = canonicalParams.toString()
+  const alternates = { canonical: qs ? `/preparaty?${qs}` : '/preparaty' }
+
   // Назва культури лишається в називному відмінку в лапках — уникає ручного
   // відмінювання («для сої», «для соняшника»), яке важко зробити правильно програмно.
   if (catName && cultureName) {
     return {
+      alternates,
       title: `${catName} — культура «${cultureName}»`,
       description: `${catName} Rodonit для культури «${cultureName}»: підбір препаратів, норми внесення, регламент застосування.`,
     }
   }
   if (cultureName) {
     return {
+      alternates,
       title: `Препарати Rodonit для культури «${cultureName}»`,
       description: `Підбір препаратів Rodonit (стимулятори, мікродобрива, фунгіциди) для культури «${cultureName}».`,
     }
   }
   if (catName) {
     return {
+      alternates,
       title: `${catName} Rodonit`,
       description: `${catName} Rodonit: повний перелік препаратів, склад, норми і регламент застосування.`,
     }
   }
   return {
+    alternates,
     title: 'Препарати для захисту і стимуляції рослин',
     description:
       'Лінійка препаратів Rodonit за категоріями: стимулятори росту, мікродобрива, фунгіциди, прилипачі.',
